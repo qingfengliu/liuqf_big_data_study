@@ -1,0 +1,17 @@
+先实现向kafka发送随机数据
+记录辅助命令
+```shell
+# 查看topic
+/opt/kafka/bin/kafka-topics.sh --list --bootstrap-server hadoop1:9092,hadoop2:9092,hadoop3:9092
+
+# 创建topic
+/opt/kafka/bin/kafka-topics.sh --create --topic test --partitions 3 --replication-factor 2 --bootstrap-server hadoop1:9092,hadoop2:9092,hadoop3:9092
+
+#建立生产者
+/opt/kafka/bin/kafka-console-producer.sh --topic test --broker-list hadoop1:9092,hadoop2:9092,hadoop3:9092
+
+#建立消费者
+#/opt/kafka/bin/kafka-console-consumer.sh --topic test --from-beginning --bootstrap-server hadoop1:9092,hadoop2:9092,hadoop3:9092
+/opt/kafka/bin/kafka-console-consumer.sh --topic test --bootstrap-server hadoop1:9092,hadoop2:9092,hadoop3:9092
+
+#测试通过生产者数据数据消费者会打印出来

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteTargetsManager">
+    <targets>
+      <target name="hadoop@192.168.212.133:22" type="ssh/sftp" uuid="0d3ff7e4-e760-465b-9042-d463bb24b283">
+        <config>
+          <option name="projectRootOnTarget" value="/home/hadoop/program/liuqf_big_data_study" />
+          <option name="serverName" value="hadoop@192.168.212.133:22 password" />
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="homePath" value="/opt/jdk" />
+            <option name="javaVersionString" value="1.8.0_202" />
+          </config>
+        </ContributedStateBase>
+      </target>
+    </targets>
+  </component>
+</project>
