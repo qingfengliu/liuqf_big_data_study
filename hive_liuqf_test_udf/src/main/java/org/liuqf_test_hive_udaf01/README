@@ -1,0 +1,18 @@
+create table test.test_udaf_avg as
+SELECT 'A' useid, 23 num
+union all
+SELECT 'A' useid, 15 num
+union all
+SELECT 'A' useid, 7 num
+union all
+SELECT 'B' useid, 19 num
+union all
+SELECT 'B' useid, 22 num;
+
+
+create temporary function test_udaf as 'org.liuqf_test_hive_udaf01.Juhe';
+
+SELECT * from test.test_udaf_avg
+--A,15
+--B,20.5
+SELECT useid,test_udaf(num) from test.test_udaf_avg group by useid

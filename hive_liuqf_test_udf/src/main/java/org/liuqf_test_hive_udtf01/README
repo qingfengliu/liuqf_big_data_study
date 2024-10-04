@@ -1,0 +1,32 @@
+基于aby_albany_calendar只是为了测试,没啥实际意义
+
+create table test.test_udtf_from_calendar as
+SELECT
+a.listing_id
+,a.`date`
+,a.available
+,a.price
+,a.adjusted_price
+,a.minimum_nights
+,a.maximum_nights
+from
+(
+	SELECT
+	listing_id
+	,`date`
+	,available
+	,price
+	,adjusted_price
+	,minimum_nights
+	,maximum_nights
+	,row_number() over(partition by listing_id) rn
+	FROM test.aby_albany_calendar where dt='2024-10-04'
+	and listing_id in ('1073179963201889958','1075444056381274297','10768745','11253948')
+)a
+where a.rn=1
+;
+
+#测试成功
+select listing_id,price,b.zk_listing_id from test.test_udtf_from_calendar a
+lateral view test_udtf(listing_id) b as zk_listing_id
+order by b.zk_listing_id desc;
