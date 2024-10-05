@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>hive_liuqf_test_udf</artifactId>
+    <artifactId>spark_lliuqf_test_udf</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -15,20 +15,25 @@
     </properties>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.apache.hive/hive-exec -->
+        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-core -->
         <dependency>
-            <groupId>org.apache.hive</groupId>
-            <artifactId>hive-exec</artifactId>
-            <version>3.1.3</version>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.13</artifactId>
+            <version>3.5.3</version>
+            <scope>provided</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-common -->
+
+
+        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-sql -->
         <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-common</artifactId>
-            <version>3.4.0</version>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_2.13</artifactId>
+            <version>3.5.3</version>
+
         </dependency>
 
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -44,21 +49,19 @@
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                             <!--添加项目中主类-->
-                            <mainClass>org.liuqf_test_hive_udf01.Main</mainClass>
-<!--                            <mainClass>org.liuqf_test_hive_udtf01.Zhakai</mainClass>-->
-<!--                            <mainClass>org.liuqf_test_hive_udaf01.Juhe</mainClass>-->
+                            <mainClass>org.spark_liuqf_test_udaf01.Test_spark_udaf</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>make-assembly</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>single</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
             </plugin>
 
         </plugins>
