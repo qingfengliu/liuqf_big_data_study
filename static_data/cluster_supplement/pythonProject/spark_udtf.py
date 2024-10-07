@@ -19,8 +19,10 @@ class WordSplitter2:
 
 
 spark=SparkSession.builder      \
-        .appName("SparkByExamples.com")      \
-        .master("spark://192.168.212.133:7077")                 \
+        .appName("SparkByExamples.com") \
+        .config("spark.executor.memory", "512m")    \
+        .config("spark.executor.cores", "2")    \
+        .config("spark.sql.warehouse.dir", "hdfs://hadoop1:9000/user/hive/warehouse")   \
         .config("hive.metastore.uris", "thrift://hadoop1:9083") \
         .enableHiveSupport().getOrCreate()
 
@@ -31,7 +33,9 @@ spark.udtf.register("split_words2", WordSplitter2)
 
 spark.sql("select * from split_words(TABLE(SELECT * FROM test.test_udtf_from_calendar))").show()
 
-spark.sql("SELECT listing_id,word FROM test.test_udtf_from_calendar, LATERAL split_words2(listing_id)").show()
+
+
+# spark.sql("SELECT listing_id,word FROM test.test_udtf_from_calendar, LATERAL split_words2(listing_id)").show()
 
 
 spark.stop()

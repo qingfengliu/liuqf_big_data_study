@@ -11,6 +11,8 @@ public class Main  {
                 .master("spark://hadoop1:7077")
                 .config("spark.executor.memory", "512m")
                 .config("spark.executor.cores", "2")
+                .config("spark.sql.warehouse.dir", "hdfs://hadoop1:9000/user/hive/warehouse")
+                .config("hive.metastore.uris", "thrift://hadoop1:9083")
                 .appName("Java Spark SQL udf example")
                 .enableHiveSupport()
                 .getOrCreate();
