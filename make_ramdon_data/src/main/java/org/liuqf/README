@@ -35,7 +35,7 @@ create table random_data.address_data(
 	state varchar(255),
 	zip varchar(255),
 	distance double
-)
+);
 
 (2) 验证数据
 select count(DISTINCT name),count(DISTINCT restaurant),count(DISTINCT address) from random_data.sale_data
@@ -52,6 +52,16 @@ select count(DISTINCT address) from random_data.address_data
 --99998
 
 (3) 从mysql中取数并写入到kafka中
+1) 创建主题
+/opt/kafka/bin/kafka-topics.sh --create --topic sale_random_data --partitions 3 --replication-factor 2 --bootstrap-server hadoop1:9092,hadoop2:9092,hadoop3:9092
+/opt/kafka/bin/kafka-topics.sh --create --topic person_random_data --partitions 3 --replication-factor 2 --bootstrap-server hadoop1:9092,hadoop2:9092,hadoop3:9092
+
+2) 建立消费者观察情况
+/opt/kafka/bin/kafka-console-consumer.sh --topic sale_random_data --bootstrap-server hadoop1:9092,hadoop2:9092,hadoop3:9092
+/opt/kafka/bin/kafka-console-consumer.sh --topic person_random_data --bootstrap-server hadoop1:9092,hadoop2:9092,hadoop3:9092
+注意问题:
+send是异步发送。需要flush才能保证数据发送到kafka中。
+
 (4) 从kafka中取数并写入到flink中
 (5) 从flink中取数并写入到doris中
 (6) 从doris中取数并写入到superset中

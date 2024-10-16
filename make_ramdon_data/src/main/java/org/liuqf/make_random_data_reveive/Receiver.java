@@ -20,7 +20,7 @@ public class Receiver {
         prop.put("group.id", "con-1");
         KafkaConsumer<String, String> consumer = new KafkaConsumer(prop);
         Collection<String> topics = new ArrayList();
-        topics.add("test");
+        topics.add("sale_random_data");
         consumer.subscribe(topics);
 
         while(true) {

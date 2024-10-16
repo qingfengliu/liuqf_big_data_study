@@ -1,15 +1,17 @@
 package org.liuqf.make_random_data_product;
 
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 
 public class Productor {
-    private cun_random_data random_data;
-    KafkaProducer<String, String> producer;
+    KafkaProducer<String, String> producer_sale;
+
     Properties prop;
 
     Productor() {
@@ -17,41 +19,41 @@ public class Productor {
         prop.put("bootstrap.servers", "hadoop1:9092,hadoop2:9092,hadoop3:9092");
         prop.put("key.serializer", StringSerializer.class.getName());
         prop.put("value.serializer", StringSerializer.class.getName());
-        this.producer = new KafkaProducer(prop);
+        this.producer_sale = new KafkaProducer(prop);
 
-        this.random_data = new cun_random_data();
     }
 
-    Productor(long timebreak,int run_times,long sleep_time) {
-        this();
-        this.random_data.setRun_times(run_times);
-        this.random_data.setTimebreak(timebreak);
-        this.random_data.setSleep_time(sleep_time);
-    }
 
     public static void main(String[] args) {
-        Productor test = new Productor(1000 * 60 * 60, 10, 1000 * 60);
+        Productor test = new Productor();
         test.run();
     }
 
     public void run() {
-        while (true) {
-            long start = System.currentTimeMillis();
-            for (int i = 0; i < random_data.getRun_times(); i++) {
-                String data = random_data.get_data();
-                producer.send(new org.apache.kafka.clients.producer.ProducerRecord<>("test", data));
-                System.out.println(data);
+        DataFactory dataFactory = null;
+        try {
+            dataFactory = new DataFactory(1000 * 10);
+
+            for (int i = 0; i < 100000; i += 10) {
+                List<List<String>> data=dataFactory.run_data(i);
+                data.forEach((List<String> item) -> {
+                    //第二个topic有时候会出现数据丢失的情况，这个是因为kafka的分区策略导致的，可以通过自定义分区策略解决
+                    System.out.println(item.get(0));
+                    System.out.println(item.get(1));
+                    producer_sale.send(new ProducerRecord<String, String>("sale_random_data", item.get(0)));
+                    producer_sale.send(new ProducerRecord<String, String>("person_random_data", item.get(1)));
+
+                });
+
+                producer_sale.flush();
+                producer_sale.close();
+
             }
-            long end = System.currentTimeMillis();
-            if (end - start < random_data.getTimebreak()) {
-                try {
-                    Thread.sleep(random_data.getSleep_time());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                break;
-            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dataFactory.close();
         }
     }
 }

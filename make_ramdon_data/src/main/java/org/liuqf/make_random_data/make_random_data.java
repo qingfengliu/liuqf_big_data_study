@@ -2,7 +2,8 @@ package org.liuqf.make_random_data;
 import java.sql.*;
 
 public class make_random_data {
-    static String Url = "jdbc:mysql://localhost/random_data";//参数参考MySql连接数据库常用参数及代码示例
+//    static String Url = "jdbc:mysql://localhost/random_data";//参数参考MySql连接数据库常用参数及代码示例
+    static String Url = "jdbc:mysql://192.168.212.133/random_data";
     static String name = "root";//数据库用户名
     static String psd = "111111";//数据库密码
 
