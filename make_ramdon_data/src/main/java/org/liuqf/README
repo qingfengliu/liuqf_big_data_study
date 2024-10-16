@@ -1,0 +1,57 @@
+修改架构。生成数据存入到mysql中。然后从mysql中取数。->kafaka->flink->doris->superset.
+
+(1) 在make_random_data中生成数据，并塞入到mysql中。
+mysql建表语句
+create database random_data;
+create table random_data.sale_data(
+	name varchar(100),
+	address varchar(500),
+	restaurant varchar(500),
+	food varchar(100),
+	count int,
+	price double,gmv double
+);
+
+create table random_data.person_data(
+    name varchar(100),
+    address varchar(500),
+    phone varchar(255),
+    email varchar(255),
+    company varchar(255),
+    job varchar(255)
+);
+
+create table random_data.restaurant_data(
+	name varchar(500),
+	company varchar(255),
+	address varchar(255),
+	color varchar(255)
+);
+
+create table random_data.address_data(
+	address varchar(500),
+	city varchar(255),
+	country varchar(255),
+	state varchar(255),
+	zip varchar(255),
+	distance double
+)
+
+(2) 验证数据
+select count(DISTINCT name),count(DISTINCT restaurant),count(DISTINCT address) from random_data.sale_data
+
+--5164	19310	99998
+
+select count(DISTINCT name) from random_data.person_data
+--5164
+
+select count(DISTINCT name) from random_data.restaurant_data
+--19310
+
+select count(DISTINCT address) from random_data.address_data
+--99998
+
+(3) 从mysql中取数并写入到kafka中
+(4) 从kafka中取数并写入到flink中
+(5) 从flink中取数并写入到doris中
+(6) 从doris中取数并写入到superset中

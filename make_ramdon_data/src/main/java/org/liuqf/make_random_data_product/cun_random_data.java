@@ -22,27 +22,13 @@ public class cun_random_data {
     //每次运行间隔时间
     private long sleep_time = 1000 * 60; // 1分钟
 
-    private Faker faker = new Faker();
 
     public String get_data(){
 
-        Integer count = faker.random().nextInt(1, 100);
-        Double price = faker.random().nextDouble(10, 1000);
 
-        Schema<Object, ?> schema = Schema.of(
-                field("name", () -> faker.name().fullName()),
-                field("address", () -> faker.address().streetAddress()),
-                field("restaurant", () -> faker.restaurant().name()),
-                field("food", () -> faker.food().ingredient()),
-                field("count", () -> count),
-                field("price", () -> price),
-                field("gmv", () -> count * price)
-        );
 
-        JsonTransformer<Object> transformer = JsonTransformer.builder().build();
+        return "";
 
-        String json = transformer.generate(schema, 1);
-        return json;
     }
 
     //javabean
