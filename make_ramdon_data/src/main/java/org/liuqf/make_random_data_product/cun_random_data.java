@@ -30,7 +30,7 @@ public class cun_random_data {
         Double price = faker.random().nextDouble(10, 1000);
 
         Schema<Object, ?> schema = Schema.of(
-                field("name", () -> faker.name().fullName()),
+                field("name", () -> faker.name().lastName()),
                 field("address", () -> faker.address().streetAddress()),
                 field("restaurant", () -> faker.restaurant().name()),
                 field("food", () -> faker.food().ingredient()),
