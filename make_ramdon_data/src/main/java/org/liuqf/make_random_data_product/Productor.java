@@ -3,9 +3,9 @@ package org.liuqf.make_random_data_product;
 import java.util.Properties;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerRecord;
+
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.liuqf.test_faker_data01.Test;
+
 
 public class Productor {
     private cun_random_data random_data;
