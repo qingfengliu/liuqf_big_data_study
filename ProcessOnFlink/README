@@ -1,0 +1,10 @@
+sale_random_data  两个主题
+person_random_data
+
+1.将sale数据和person数据合并
+
+窗口有三种，滚动窗口，滑动窗口，会话窗口。
+
+
+TumblingEventTimeWindows 滚动窗口,就是跑不过,猜测和时区有关。
+会话窗口：窗口的开始和结束是不固定的，根据数据的时间间隔来确定。

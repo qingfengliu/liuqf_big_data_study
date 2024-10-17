@@ -62,6 +62,10 @@ select count(DISTINCT address) from random_data.address_data
 注意问题:
 send是异步发送。需要flush才能保证数据发送到kafka中。
 
+3) 建立生产者手动发送数据
+/opt/kafka/bin/kafka-console-producer.sh --topic sale_random_data --broker-list hadoop1:9092,hadoop2:9092,hadoop3:9092
+/opt/kafka/bin/kafka-console-producer.sh --topic person_random_data --broker-list hadoop1:9092,hadoop2:9092,hadoop3:9092
+
 (4) 从kafka中取数并写入到flink中
 (5) 从flink中取数并写入到doris中
 (6) 从doris中取数并写入到superset中

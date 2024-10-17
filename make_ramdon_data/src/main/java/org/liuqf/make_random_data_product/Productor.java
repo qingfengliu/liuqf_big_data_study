@@ -32,7 +32,7 @@ public class Productor {
     public void run() {
         DataFactory dataFactory = null;
         try {
-            dataFactory = new DataFactory(1000 * 10);
+            dataFactory = new DataFactory(1000 * 30);   // 30s
 
             for (int i = 0; i < 100000; i += 10) {
                 List<List<String>> data=dataFactory.run_data(i);
@@ -42,17 +42,14 @@ public class Productor {
                     System.out.println(item.get(1));
                     producer_sale.send(new ProducerRecord<String, String>("sale_random_data", item.get(0)));
                     producer_sale.send(new ProducerRecord<String, String>("person_random_data", item.get(1)));
-
+                    producer_sale.flush();
                 });
-
-                producer_sale.flush();
-                producer_sale.close();
-
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            producer_sale.close();
             dataFactory.close();
         }
     }
