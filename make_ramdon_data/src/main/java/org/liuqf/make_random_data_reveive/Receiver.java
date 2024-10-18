@@ -17,7 +17,7 @@ public class Receiver {
         prop.put("bootstrap.servers", "hadoop1:9092,hadoop2:9092,hadoop3:9092");
         prop.put("key.deserializer", StringDeserializer.class.getName());
         prop.put("value.deserializer", StringDeserializer.class.getName());
-        prop.put("group.id", "con-1");
+//        prop.put("group.id", "con-1");
         KafkaConsumer<String, String> consumer = new KafkaConsumer(prop);
         Collection<String> topics = new ArrayList();
         topics.add("sale_random_data");
