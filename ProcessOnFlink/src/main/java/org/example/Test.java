@@ -9,6 +9,7 @@ import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Arrays;
@@ -29,23 +30,27 @@ public class Test {
 
         //sale data source
         KafkaSource<String> KfkSaleDataSource = KafkaSource.<String>builder()
-                .setBootstrapServers("hadoop1:9092,hadoop2:9092,hadoop3:9092")
+                .setBootstrapServers("192.168.0.9:9092")
                 .setTopics("sale_random_data")
 //                .setStartingOffsets(OffsetsInitializer.earliest())
                 .setStartingOffsets(OffsetsInitializer.latest())
                 .setValueOnlyDeserializer(new SimpleStringSchema())
                 .build();
-        DataStreamSource<String> lines = env.fromSource(KfkSaleDataSource, WatermarkStrategy.noWatermarks(), "kafka source");
+        //noWatermarks 无水印
+        //forBoundedOutOfOrderness 有界无序水印
+        //forMonotonousTimestamps 单调递增水印
+        //forGenerator 生成水印
+        DataStreamSource<String> lines = env.fromSource(KfkSaleDataSource, WatermarkStrategy.forMonotonousTimestamps(), "kafka source");
 
         //person data source
         KafkaSource<String> KfkPersonDataSource2 = KafkaSource.<String>builder()
-                .setBootstrapServers("hadoop1:9092,hadoop2:9092,hadoop3:9092")
+                .setBootstrapServers("192.168.0.9:9092")
                 .setTopics("person_random_data")
                 .setStartingOffsets(OffsetsInitializer.latest())
                 .setValueOnlyDeserializer(new SimpleStringSchema())
                 .build();
 
-        DataStreamSource<String> lines2 = env.fromSource(KfkPersonDataSource2, WatermarkStrategy.noWatermarks(), "kafka source2");
+        DataStreamSource<String> lines2 = env.fromSource(KfkPersonDataSource2, WatermarkStrategy.forMonotonousTimestamps() , "kafka source2");
 
 
         SingleOutputStreamOperator<Tuple2<String, String>> sale_data = lines.map(new MapFunction<String, Tuple2<String, String>>() {
@@ -55,7 +60,13 @@ public class Test {
                 return new Tuple2<String, String>(jsonObject.getString("name"), jsonObject.toString());
 
             }
-        });
+        }).assignTimestampsAndWatermarks(
+                WatermarkStrategy.<Tuple2<String, String>>forMonotonousTimestamps()
+                        .withTimestampAssigner((event, timestamp) -> {
+                            JSONObject jsonObject = new JSONObject(event.f1);
+                            return jsonObject.getLong("tm");
+                        })
+        );
 
         SingleOutputStreamOperator<Tuple2<String, String>> person_data = lines2.map(new MapFunction<String, Tuple2<String, String>>() {
             @Override
@@ -63,7 +74,13 @@ public class Test {
                 JSONObject jsonObject = new JSONObject(value);
                 return new Tuple2<String, String>(jsonObject.getString("name"), value);
             }
-        });
+        }).assignTimestampsAndWatermarks(
+                WatermarkStrategy.<Tuple2<String, String>>forMonotonousTimestamps()
+                        .withTimestampAssigner((event, timestamp) -> {
+                            JSONObject jsonObject = new JSONObject(event.f1);
+                            return jsonObject.getLong("tm");
+                        })
+        );
 
 
         sale_data.join(person_data)
@@ -79,9 +96,10 @@ public class Test {
                         return value.f0;
                     }
                 })
+
                 //滑动窗口,窗口有三种，滚动窗口，滑动窗口，会话窗口
-//                .window(TumblingEventTimeWindows.of(Time.seconds(10)))
-                .window(SlidingProcessingTimeWindows.of(Time.seconds(10), Time.seconds(5)))
+                .window(TumblingEventTimeWindows.of(Duration.ofSeconds(2L)))
+//                .window(SlidingProcessingTimeWindows.of(Time.seconds(10), Time.seconds(5)))
                 .apply(new JoinFunction<Tuple2<String, String>, Tuple2<String, String>, String>() {
                     @Override
                     public String join(Tuple2<String, String> first, Tuple2<String, String> second) {

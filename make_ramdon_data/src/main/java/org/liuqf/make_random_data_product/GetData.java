@@ -12,7 +12,7 @@ import java.util.List;
 
 
 public class GetData {
-    String Url = "jdbc:mysql://localhost/random_data";//参数参考MySql连接数据库常用参数及代码示例
+    String Url = "jdbc:mysql://192.168.0.6/random_data";//参数参考MySql连接数据库常用参数及代码示例
     String name = "root";//数据库用户名
     String psd = "111111";//数据库密码
 

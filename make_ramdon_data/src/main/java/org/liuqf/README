@@ -69,3 +69,12 @@ send是异步发送。需要flush才能保证数据发送到kafka中。
 (4) 从kafka中取数并写入到flink中
 (5) 从flink中取数并写入到doris中
 (6) 从doris中取数并写入到superset中
+
+
+-----------------工作笔记本环境中
+/opt/kafka/bin/kafka-topics.sh --create --topic sale_random_data --partitions 1 --bootstrap-server 192.168.0.9:9092
+/opt/kafka/bin/kafka-topics.sh --create --topic person_random_data --partitions 1 --bootstrap-server 192.168.0.9:9092
+
+--建立生产者调试
+/opt/kafka/bin/kafka-console-producer.sh --topic sale_random_data --broker-list 192.168.0.9:9092
+/opt/kafka/bin/kafka-console-producer.sh --topic person_random_data --broker-list 192.168.0.9:9092

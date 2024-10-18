@@ -16,7 +16,7 @@ public class Productor {
 
     Productor() {
         this.prop = new Properties();
-        prop.put("bootstrap.servers", "hadoop1:9092,hadoop2:9092,hadoop3:9092");
+        prop.put("bootstrap.servers", "192.168.0.9:9092");
         prop.put("key.serializer", StringSerializer.class.getName());
         prop.put("value.serializer", StringSerializer.class.getName());
         this.producer_sale = new KafkaProducer(prop);
@@ -44,6 +44,7 @@ public class Productor {
                     producer_sale.send(new ProducerRecord<String, String>("person_random_data", item.get(1)));
                     producer_sale.flush();
                 });
+                break;
             }
 
         } catch (Exception e) {

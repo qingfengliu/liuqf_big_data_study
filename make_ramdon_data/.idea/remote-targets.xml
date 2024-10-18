@@ -14,6 +14,17 @@
           </config>
         </ContributedStateBase>
       </target>
+      <target name="root@localhost:8022" type="ssh/sftp" uuid="58ba2357-52f5-4641-bd80-9518b8b37e2c">
+        <config>
+          <option name="projectRootOnTarget" value="/root/make_ramdon_data" />
+          <option name="serverName" value="root@localhost:8022 password" />
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="homePath" value="/opt/jdk8" />
+          </config>
+        </ContributedStateBase>
+      </target>
     </targets>
   </component>
 </project>
