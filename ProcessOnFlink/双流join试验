@@ -1,0 +1,28 @@
+见Test
+流水线配置为forMonotonousTimestamps。窗口类型为TumblingEventTimeWindows，窗口大小为5秒。
+双流A为sale_random_data，双流B为person_random_data。
+数据:
+{"gmv": 7964.705445974446, "food": "Apple Juice Concentrate", "name": "Reed", "count": 31, "price": 256.9259821282079, "address": "389 Lorine Spurs","tm":2000}
+{"job": "Officer", "name": "Reed","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":3000}
+
+{"gmv": 8893.282397480054, "food": "Nutmeg", "name": "Mackenzie", "count": 94, "price": 94.60938720723462, "address": "312 Cummings Highway","tm":6000}
+{"job": "Analyst", "name": "Mackenzie","phone": "(828) 541-0275", "address": "031 Larson Vista","tm":10500}
+
+
+{"gmv": 8005.161178252144, "food": "Cantaloupe", "name": "Marjorie", "count": 12, "price": 667.0967648543453, "address": "2035 Jerde Center","tm":14000}
+{"job": "Strategist", "name": "Marjorie","phone": "715-810-1250", "address": "2435 Block Locks","tm":17000}
+
+
+{"gmv": 12550.6288902413, "food": "Koshihikari Rice", "name": "Junior", "count": 27, "price": 464.8381070459741, "address": "058 Danyelle Lake","tm":18000}
+{"job": "Designer", "name": "Junior","phone": "740-313-5784", "address": "1964 Debbi Parkway","tm":19000}
+
+{"gmv": 60153.55211402675, "food": "Swordfish", "name": "Keila", "count": 82, "price": 733.5799038295945, "address": "6617 Grover Village","tm":22000}
+{"job": "Representative", "name": "Keila","phone": "860-937-1092", "address": "198 Ervin Passage","tm":23000}
+
+试验1,就是上边的数据
+试验3,将key3的B点时间改为16000
+试验3,将key2的B点时间改为6500。
+试验4,将key2的B点去掉。
+
+结论1:对于TumblingEventTimeWindows的开关确实是用的整点的时间戳，而不是以数据出现的时间戳为基准。
+结论2:如果单流的数据出现了,watermaker不会更新。

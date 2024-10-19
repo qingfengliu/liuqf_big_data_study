@@ -15,6 +15,7 @@ import java.util.Arrays;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.functions.FlatMapIterator;
+import org.apache.flink.streaming.api.functions.AssignerWithPeriodicWatermarks;
 import org.apache.flink.streaming.api.windowing.assigners.SlidingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
@@ -55,7 +56,13 @@ public class Test {
                 return new Tuple2<String, String>(jsonObject.getString("name"), jsonObject.toString());
 
             }
-        });
+        }).assignTimestampsAndWatermarks(
+                WatermarkStrategy.<Tuple2<String, String>>forMonotonousTimestamps()
+                        .withTimestampAssigner((event, timestamp) -> {
+                            JSONObject jsonObject = new JSONObject(event.f1);
+                            return jsonObject.getLong("tm");
+                        })
+        );
 
         SingleOutputStreamOperator<Tuple2<String, String>> person_data = lines2.map(new MapFunction<String, Tuple2<String, String>>() {
             @Override
@@ -63,7 +70,13 @@ public class Test {
                 JSONObject jsonObject = new JSONObject(value);
                 return new Tuple2<String, String>(jsonObject.getString("name"), value);
             }
-        });
+        }).assignTimestampsAndWatermarks(
+                WatermarkStrategy.<Tuple2<String, String>>forMonotonousTimestamps()
+                        .withTimestampAssigner((event, timestamp) -> {
+                            JSONObject jsonObject = new JSONObject(event.f1);
+                            return jsonObject.getLong("tm");
+                        })
+        );
 
 
         sale_data.join(person_data)
@@ -80,8 +93,8 @@ public class Test {
                     }
                 })
                 //滑动窗口,窗口有三种，滚动窗口，滑动窗口，会话窗口
-//                .window(TumblingEventTimeWindows.of(Time.seconds(10)))
-                .window(SlidingProcessingTimeWindows.of(Time.seconds(10), Time.seconds(5)))
+                .window(TumblingEventTimeWindows.of(Time.seconds(5)))
+//                .window(SlidingProcessingTimeWindows.of(Time.seconds(10), Time.seconds(5)))
                 .apply(new JoinFunction<Tuple2<String, String>, Tuple2<String, String>, String>() {
                     @Override
                     public String join(Tuple2<String, String> first, Tuple2<String, String> second) {
