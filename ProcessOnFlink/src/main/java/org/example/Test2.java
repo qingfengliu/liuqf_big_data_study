@@ -1,30 +1,59 @@
 package org.example;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.api.common.functions.JoinFunction;
+import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.api.common.serialization.SimpleStringSchema;
+import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
+import org.apache.flink.api.java.DataSet;
+import org.apache.flink.api.java.io.jdbc.JDBCInputFormat;
+import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.api.java.typeutils.RowTypeInfo;
+import org.apache.flink.connector.kafka.source.KafkaSource;
+import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+
+import org.apache.flink.streaming.api.windowing.time.Time;
+import org.apache.flink.types.Row;
 import org.json.JSONObject;
 
 import java.util.Iterator;
-
 public class Test2 {
     public static void main(String[] args) {
+        //试验批流join，批数据从mysql中读取，流数据从kafka中读取
+        // Create a Flink execution environment
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        //sale data source
+        KafkaSource<String> KfkPersonDataSource2 = KafkaSource.<String>builder()
+                .setBootstrapServers("192.168.0.9:9092")
+                .setTopics("sale_random_data")
+                .setStartingOffsets(OffsetsInitializer.latest())
+                .setValueOnlyDeserializer(new SimpleStringSchema())
+                .build();
 
-        JSONObject jsonObject1 = new JSONObject("{\"name\": \"Reed\",\"A\":\"1\",\"timestamp\":10}");
+        DataStreamSource<String> lines=env.fromSource(KfkPersonDataSource2, WatermarkStrategy.noWatermarks(), "kafka source");
+        //lines将json的name列做为key，value列做为value
+        SingleOutputStreamOperator<Tuple2<String, String>> sale_data = lines.map(new MapFunction<String, Tuple2<String, String>>() {
+            @Override
+            public Tuple2<String, String> map(String value) {
+                JSONObject jsonObject = new JSONObject(value);
+                return new Tuple2<String, String>(jsonObject.getString("name"), jsonObject.toString());
 
-        JSONObject jsonObject2 = new JSONObject("{\"name\": \"Reed\",\"B\":\"2\",\"timestamp\":20}");
-
-
-        Iterator<String> keys = jsonObject2.keys();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            //字符串
-            if (jsonObject1.has(key)&& !key.equals("name")) {
-                jsonObject1.put(key + "_A", jsonObject1.get(key));
-                jsonObject1.put(key + "_B", jsonObject2.get(key));
-                //删除key
-                jsonObject1.remove(key);
-            } else {
-                jsonObject1.put(key, jsonObject2.get(key));
             }
+        });
+        sale_data.map(new StaticJoinDemo()).print();
+
+        try {
+            env.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        System.out.println(jsonObject1.toString());
     }
+
+
 }

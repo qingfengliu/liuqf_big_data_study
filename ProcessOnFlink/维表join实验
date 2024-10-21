@@ -1,0 +1,6 @@
+
+/opt/kafka/bin/kafka-console-producer.sh --topic sale_random_data --broker-list 192.168.0.9:9092
+/opt/kafka/bin/kafka-console-producer.sh --topic person_random_data --broker-list 192.168.0.9:9092
+
+{"gmv": 7964.705445974446, "food": "Apple Juice Concentrate", "name": "Reed", "count": 31, "price": 256.9259821282079, "address": "389 Lorine Spurs","tm":2000}
+
