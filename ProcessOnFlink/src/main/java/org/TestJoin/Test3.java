@@ -1,4 +1,4 @@
-package org.example;
+package org.TestJoin;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -133,7 +133,7 @@ public class Test3 {
             env.execute();
         } catch (Exception e) {
             e.printStackTrace();
-            }
+        }
 
     }
     @Data  // 注解在类上，为类提供读写属性，还提供equals()、hashCode()、toString()方法

@@ -1,4 +1,4 @@
-package org.example;
+package org.TestJoin;
 
 
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
@@ -14,7 +14,6 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import org.json.JSONObject;
 
-import java.util.Iterator;
 public class Test2 {
     public static void main(String[] args) {
         //试验批流join，批数据从mysql中读取，流数据从kafka中读取

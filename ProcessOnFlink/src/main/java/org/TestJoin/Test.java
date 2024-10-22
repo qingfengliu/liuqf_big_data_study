@@ -1,4 +1,4 @@
-package org.example;
+package org.TestJoin;
 import org.apache.flink.api.common.functions.JoinFunction;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
@@ -9,14 +9,9 @@ import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.Arrays;
-import org.apache.flink.api.common.functions.MapFunction;
+
 import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.api.java.functions.FlatMapIterator;
-import org.apache.flink.streaming.api.functions.AssignerWithPeriodicWatermarks;
-import org.apache.flink.streaming.api.windowing.assigners.SlidingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.json.JSONObject;
