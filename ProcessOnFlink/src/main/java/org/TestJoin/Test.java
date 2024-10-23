@@ -1,4 +1,4 @@
-package org.example;
+package org.TestJoin;
 import org.apache.flink.api.common.functions.JoinFunction;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
@@ -10,15 +10,10 @@ import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 
 import java.time.Duration;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.Arrays;
-import org.apache.flink.api.common.functions.MapFunction;
+
 import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.api.java.functions.FlatMapIterator;
-import org.apache.flink.streaming.api.windowing.assigners.SlidingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
-import org.apache.flink.streaming.api.windowing.time.Time;
 import org.json.JSONObject;
 import org.apache.flink.api.java.functions.KeySelector;
 
@@ -99,7 +94,7 @@ public class Test {
 
                 //滑动窗口,窗口有三种，滚动窗口，滑动窗口，会话窗口
                 //TumblingEventTimeWindows是一WindowAssigner，它将所有的元素分配到固定大小的窗口中。窗口的开始时间是固定的，例如，每小时的窗口或每天的窗口。
-                .window(TumblingEventTimeWindows.of(Duration.ofSeconds(2L)))
+                .window(TumblingEventTimeWindows.of(Duration.ofSeconds(5L)))
 //                .window(SlidingProcessingTimeWindows.of(Time.seconds(10), Time.seconds(5)))
                 .apply(new JoinFunction<Tuple2<String, String>, Tuple2<String, String>, String>() {
                     @Override

@@ -1,0 +1,23 @@
+join旁路输出
+window的旁路输出是window上带的属性。
+join和cogroup的join都不带旁路输出。被底层隐藏了，
+在代码CogroupedStreams.java中的WithWindow内部类定义了这部分
+其私有变量private WindowedStream<TaggedUnion<T1, T2>, KEY, W> windowedStream;(WithWindow里有个getWindowedStream能取到这个window但是注释里只能测试使用)
+
+里边有windows
+windowedStream =
+		new KeyedStream<TaggedUnion<T1, T2>, KEY>(
+						unionStream, unionKeySelector, keyType)
+				.window(windowAssigner);
+
+追下去,追到windowedStream有:
+public WindowedStream<T, K, W> sideOutputLateData(OutputTag<T> outputTag) {
+	outputTag = input.getExecutionEnvironment().clean(outputTag);
+	builder.sideOutputLateData(outputTag);
+	return this;
+}
+这里能设置旁路输出。但是包装到外层没法使用。想使用只能用Interval Join
+
+
+Interval Join是一个KeyedStream,行为与CogroupedStream不同值得深究一下
+https://blog.csdn.net/lw277232240/article/details/136988232

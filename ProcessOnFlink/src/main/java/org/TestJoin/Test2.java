@@ -1,4 +1,4 @@
-package org.example;
+package org.TestJoin;
 
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.MapFunction;

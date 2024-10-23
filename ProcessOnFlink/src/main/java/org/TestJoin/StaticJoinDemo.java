@@ -1,4 +1,4 @@
-package org.example;
+package org.TestJoin;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
