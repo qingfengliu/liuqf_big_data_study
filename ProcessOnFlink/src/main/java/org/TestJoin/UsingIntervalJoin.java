@@ -90,11 +90,16 @@ public class UsingIntervalJoin {
                     }
                 }))
                 .between(Time.seconds(-5), Time.seconds(5))
+                .sideOutputLeftLateData(leftLateTag)
+                .sideOutputRightLateData(rightLateTag)
                 .process(new MyIntervalJoinFunction());
-//                .getSideOutput(new OutputTag<Tuple2<String, String>>("late-date") {
-//                });
-        //这里打印不出结果
-
+        //旁路输出,只有流水线移动后发送历史数据才生效。
+        //假如在流水线移动之前,某个流只有一条数据到来,后续流水线移动(触发join流水线才会移动)
+        //那么这条数据旁路输出也会丢失,
+        //怎样将这条丢失的数据输出呢
+        //下次尝试使用coGroup+connect
+        hebing.getSideOutput(leftLateTag).print("left-late=");
+        hebing.getSideOutput(rightLateTag).print("right-late=");
         hebing.map(new MapFunction<String, String>() {
             @Override
             public String map(String value) throws Exception {
@@ -102,15 +107,14 @@ public class UsingIntervalJoin {
             }
         }).print();
 
-        DataStream<String> sideOutputStream = hebing.getSideOutput(outputTag);
-        sideOutputStream.print("side-output");
         try {
             env.execute();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    static final OutputTag<String> outputTag = new OutputTag<String>("side-output"){};
+    static final OutputTag<Tuple2<String, String>> leftLateTag = new OutputTag<Tuple2<String, String>>("left-output"){};
+    static final OutputTag<Tuple2<String, String>> rightLateTag = new OutputTag<Tuple2<String, String>>("right-output"){};
 
     public static class MyIntervalJoinFunction extends ProcessJoinFunction<Tuple2<String, String>, Tuple2<String, String>, String> {
 
@@ -134,12 +138,12 @@ public class UsingIntervalJoin {
                     jsonObject1.put(key, jsonObject2.get(key));
                 }
             }
-            System.out.println(ctx.getLeftTimestamp());
-            System.out.println(ctx.getRightTimestamp());
+//            System.out.println(ctx.getLeftTimestamp());
+//            System.out.println(ctx.getRightTimestamp());
             System.out.println(ctx.getTimestamp());
 //            System.out.println(jsonObject1.toString());
             //迟到的数据输出到侧输出流
-            ctx.output(outputTag, "sideout-"+jsonObject1.toString());
+//            ctx.output(outputTag, "sideout-"+jsonObject1.toString());
             out.collect(jsonObject1.toString());
         }
 
