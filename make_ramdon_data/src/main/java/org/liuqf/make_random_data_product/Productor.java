@@ -40,9 +40,9 @@ public class Productor {
                     //第二个topic有时候会出现数据丢失的情况，这个是因为kafka的分区策略导致的，可以通过自定义分区策略解决
                     System.out.println(item.get(0));
                     System.out.println(item.get(1));
-                    producer_sale.send(new ProducerRecord<String, String>("sale_random_data", item.get(0)));
-                    producer_sale.send(new ProducerRecord<String, String>("person_random_data", item.get(1)));
-                    producer_sale.flush();
+//                    producer_sale.send(new ProducerRecord<String, String>("sale_random_data", item.get(0)));
+//                    producer_sale.send(new ProducerRecord<String, String>("person_random_data", item.get(1)));
+//                    producer_sale.flush();
                 });
                 break;
             }

@@ -21,3 +21,6 @@ public WindowedStream<T, K, W> sideOutputLateData(OutputTag<T> outputTag) {
 
 Interval Join是一个KeyedStream,行为与CogroupedStream不同值得深究一下
 https://blog.csdn.net/lw277232240/article/details/136988232
+
+{"gmv": 7964.705445974446, "food": "Apple Juice Concentrate", "name": "Reed", "count": 31, "price": 256.9259821282079, "address": "389 Lorine Spurs","tm":2000}
+
