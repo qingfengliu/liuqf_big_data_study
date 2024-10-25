@@ -1,0 +1,102 @@
+{"gmv": 7964.705445974446, "food": "Apple Juice Concentrate", "name": "Reed", "count": 31, "price": 256.9259821282079, "address": "389 Lorine Spurs","tm":2000}
+{"job": "Officer", "name": "Reed","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":3000}
+左边流水线为2000-1
+右边流水线为3000-1
+
+
+{"gmv": 8893.282397480054, "food": "Nutmeg", "name": "Mackenzie", "count": 94, "price": 94.60938720723462, "address": "312 Cummings Highway","tm":6000}
+{"job": "Analyst", "name": "Mackenzie","phone": "(828) 541-0275", "address": "031 Larson Vista","tm":8000}
+左边流水线为6000-1
+右边流水线为8000-1
+
+--------------------------------------------------------------------------
+
+{"gmv": 7964.705445974446, "food": "Apple Juice Concentrate", "name": "Reed", "count": 31, "price": 256.9259821282079, "address": "389 Lorine Spurs","tm":2000}
+会注册一个7000的定时器
+
+--只要不join上
+
+{"gmv": 8893.282397480054, "food": "Nutmeg", "name": "Mackenzie", "count": 94, "price": 94.60938720723462, "address": "312 Cummings Highway","tm":7000}
+会注册一个12000的定时器
+
+
+{"gmv": 8005.161178252144, "food": "Cantaloupe", "name": "Marjorie", "count": 12, "price": 667.0967648543453, "address": "2035 Jerde Center","tm":14000}
+{"job": "Strategist", "name": "Marjorie","phone": "715-810-1250", "address": "2435 Block Locks","tm":17000}
+只要不join上边的流水线就不会触发。Reed和Mackenzie都会触发
+目前左边的流水线为14000-1，
+右边的流水线为17000-1
+
+
+
+{"gmv": 12550.6288902413, "food": "Koshihikari Rice", "name": "Junior", "count": 27, "price": 464.8381070459741, "address": "058 Danyelle Lake","tm":8500}
+会注册一个13500的定时器。
+流水线为13999，但是不会触发定时器
+
+
+
+{"job": "Designer", "name": "Junior","phone": "740-313-5784", "address": "1964 Debbi Parkway","tm":13000}
+也会Join上不会触发定时器
+
+{"gmv": 60153.55211402675, "food": "Swordfish", "name": "Keila", "count": 82, "price": 733.5799038295945, "address": "6617 Grover Village","tm":22000}
+{"job": "Representative", "name": "Keila","phone": "860-937-1092", "address": "198 Ervin Passage","tm":23000}
+左边的流水线不受上一条数据8500，影响还是14000-1
+右边的流水线也不受影响还是17000-1
+
+
+下一条流水线左22000-1,右23000-1
+{"gmv": 60153.55211402675, "food": "Swordfish", "name": "JIM", "count": 82, "price": 733.5799038295945, "address": "6617 Grover Village","tm":6000}
+{"job": "Representative", "name": "JIM","phone": "860-937-1092", "address": "198 Ervin Passage","tm":8000}
+还是会join上。
+
+{"gmv": 60153.55211402675, "food": "Swordfish", "name": "Jerry", "count": 82, "price": 733.5799038295945, "address": "6617 Grover Village","tm":6000}
+
+{"gmv": 60153.55211402675, "food": "Swordfish", "name": "Bob", "count": 82, "price": 733.5799038295945, "address": "6617 Grover Village","tm":8000}
+不会触发定时器
+
+
+
+{"gmv": 60153.55211402675, "food": "Swordfish", "name": "Buer", "count": 82, "price": 733.5799038295945, "address": "6617 Grover Village","tm":6000}
+{"job": "Representative", "name": "Buer","phone": "860-937-1092", "address": "198 Ervin Passage","tm":12000}
+不会触发定时器
+
+{"gmv": 60153.55211402675, "food": "Swordfish", "name": "JIM", "count": 82, "price": 733.5799038295945, "address": "6617 Grover Village","tm":6000}
+注册一个11000的定时器
+
+
+{"gmv": 60153.55211402675, "food": "Swordfish", "name": "Buer", "count": 82, "price": 733.5799038295945, "address": "6617 Grover Village","tm":8000}
+{"job": "Representative", "name": "Buer","phone": "860-937-1092", "address": "198 Ervin Passage","tm":8000}
+不会触发定时器
+
+
+{"gmv": 60153.55211402675, "food": "Swordfish", "name": "Tom", "count": 82, "price": 733.5799038295945, "address": "6617 Grover Village","tm":20000}
+{"job": "Representative", "name": "Tom","phone": "860-937-1092", "address": "198 Ervin Passage","tm":20000}
+不会触发定时器
+
+{"gmv": 60153.55211402675, "food": "Swordfish", "name": "Tom", "count": 82, "price": 733.5799038295945, "address": "6617 Grover Village","tm":25000}
+{"job": "Representative", "name": "Tom","phone": "860-937-1092", "address": "198 Ervin Passage","tm":25000}
+触发了Jerry、JIM、Bob
+
+可以得出结论,即使你注册了定时器,只要流水线不发生变化不会触发定时器。
+
+刷新流水线,让左流与右流不相同
+{"gmv": 7964.705445974446, "food": "Apple Juice Concentrate", "name": "Reed", "count": 31, "price": 256.9259821282079, "address": "389 Lorine Spurs","tm":26000}
+{"job": "Officer", "name": "Reed","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":28000}
+
+
+--左流和右流分别注册一个 准备触发的数据
+{"gmv": 8893.282397480054, "food": "Nutmeg", "name": "Mackenzie", "count": 94, "price": 94.60938720723462, "address": "312 Cummings Highway","tm":6000}
+
+{"job": "Strategist", "name": "Marjorie","phone": "715-810-1250", "address": "2435 Block Locks","tm":6000}
+
+
+{"gmv": 7964.705445974446, "food": "Apple Juice Concentrate", "name": "Alex", "count": 31, "price": 256.9259821282079, "address": "389 Lorine Spurs","tm":27000}
+{"job": "Officer", "name": "Alex","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":27000}
+没有任何定时器被触发
+
+
+触发了
+{"gmv": 7964.705445974446, "food": "Apple Juice Concentrate", "name": "Wang", "count": 31, "price": 256.9259821282079, "address": "389 Lorine Spurs","tm":28000}
+{"job": "Officer", "name": "Wang","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":28000}
+
+两个流水线都变了才会触发ontime
+

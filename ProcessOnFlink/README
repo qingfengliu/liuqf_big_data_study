@@ -1,13 +1,19 @@
 sale_random_data  两个主题
 person_random_data
 
-1.将sale数据和person数据合并
 
-窗口有三种，滚动窗口，滑动窗口，会话窗口。
-
-
-TumblingEventTimeWindows 滚动窗口,就是跑不过.网上看到的原因是noWatermarks造成的。后来加上时间戳和watermark后，就可以了。
-会话窗口：窗口的开始和结束是不固定的，根据数据的时间间隔来确定。
-
+1.命令备份
 /opt/kafka/bin/kafka-console-producer.sh --topic sale_random_data --broker-list hadoop1:9092,hadoop2:9092,hadoop3:9092
 /opt/kafka/bin/kafka-console-producer.sh --topic person_random_data --broker-list hadoop1:9092,hadoop2:9092,hadoop3:9092
+
+
+2.试验结论
+(1) timeservice触发试验
+
+    1) 只有connect上了才会改变流水线
+    2) timeservice触发条件是流水线发生变化,并且timeservice的超时时间小于流水线时间。双流中,貌似需要两个流的流水线都变化才会触发timeservice。
+    这实用中就需要注意了,如果乱序十分严重。某条数据拉低高了流水线,并且其后的数据均小于流水线,那么timeservice就不会触发。内存中的数据就会越来越多。
+    3) 按目前UsingCoGroupFunction的实现,如果同一时间A流有两条数据进来,那么timeservice只会触发一次,并且还不能笛卡尔积,join的结果为最新的一条数据。
+    但是我看通过修改也能实现笛卡尔积。
+
+
