@@ -1,0 +1,60 @@
+1.试验1,不允许延迟关闭窗口,不旁路输出
+{"gmv": 7964.705445974446, "food": "Apple Juice Concentrate", "name": "Reed", "count": 31, "price": 256.9259821282079, "address": "389 Lorine Spurs","tm":2000}
+{"gmv": 7964.705445974446, "food": "Apple Juice Concentrate", "name": "Jim", "count": 31, "price": 256.9259821282079, "address": "389 Lorine Spurs","tm":2500}
+{"job": "Officer", "name": "Reed","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":3000}
+{"job": "Officer", "name": "Reed","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":4000}
+{"job": "Officer", "name": "Jim","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":3500}
+其实到下边那条以后上边的窗口已经合并到一起输出结果了，下边的数据在下个窗口里
+{"job": "Officer", "name": "Reed","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":5000}
+{"job": "Officer", "name": "Jim","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":5000}
+
+in process key: Reed
+(Reed,3)
+in process key: Jim
+(Jim,2)
+
+{"gmv": 7964.705445974446, "food": "Apple Juice Concentrate", "name": "Tom", "count": 31, "price": 256.9259821282079, "address": "389 Lorine Spurs","tm":2000}
+{"gmv": 7964.705445974446, "food": "Apple Juice Concentrate", "name": "Jim", "count": 31, "price": 256.9259821282079, "address": "389 Lorine Spurs","tm":5500}
+{"job": "Officer", "name": "Reed","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":6000}
+{"job": "Officer", "name": "Reed","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":5000}
+{"job": "Officer", "name": "Jim","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":7500}
+{"job": "Officer", "name": "Reed","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":9000}
+{"job": "Officer", "name": "Jim","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":10000}
+in process key: Reed
+(Reed,4)
+in process key: Jim
+(Jim,2)
+
+Tom不会出现了，在流水线后才会出现新窗口
+
+{"job": "Officer", "name": "Reed","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":16000}
+in process key: Jim
+(Jim,1)
+这个jim就是上边10000的那个。这样说flink关闭肯定会丢失1个或以上的数据
+
+2.设置延迟1s关闭窗口,设置旁路输出
+{"gmv": 7964.705445974446, "food": "Apple Juice Concentrate", "name": "Reed", "count": 31, "price": 256.9259821282079, "address": "389 Lorine Spurs","tm":2000}
+{"job": "Officer", "name": "Reed","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":3000}
+{"job": "Officer", "name": "Jim","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":5000}
+in process key: Reed
+(Reed,2)
+
+{"job": "Officer", "name": "Jim","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":4500}
+jim会输出
+
+{"job": "Officer", "name": "Reed","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":4800}
+in process key: Reed
+(Reed,3)
+在上边累加上了
+
+{"gmv": 7964.705445974446, "food": "Apple Juice Concentrate", "name": "Tom", "count": 31, "price": 256.9259821282079, "address": "389 Lorine Spurs","tm":2000}
+in process key: Tom
+(Tom,1)
+由于0-5的窗口还没关闭所以这个语句不会旁路
+
+
+{"job": "Officer", "name": "Jim","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":6000}
+0-5窗口关闭
+
+{"job": "Officer", "name": "Jim","phone": "1-351-918-7147", "address": "86990 Aleen Divide","tm":4000}
+被旁路
