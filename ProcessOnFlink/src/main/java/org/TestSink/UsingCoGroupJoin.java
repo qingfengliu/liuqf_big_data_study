@@ -85,7 +85,7 @@ public class UsingCoGroupJoin {
         String job;
         String company;
         long tm;
-
+//静态内部类可以new
         @Override
         public String toString() {
             return "{" +
