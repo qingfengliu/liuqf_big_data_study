@@ -6,7 +6,6 @@ person_random_data
 窗口有三种，滚动窗口，滑动窗口，会话窗口。
 
 
-
 TumblingEventTimeWindows 滚动窗口,就是跑不过,猜测和时区有关。
 会话窗口：窗口的开始和结束是不固定的，根据数据的时间间隔来确定。
 
@@ -23,4 +22,8 @@ forMonotonousTimestamps是forBoundedOutOfOrderness的特例，是outOfOrdernessM
 但是具体实现的时候还会根据其他细节有不同的具体实现方式。在不使用sql和table接口的情况下分别进行测试
 https://blog.csdn.net/m0_63475429/article/details/127417649
 https://blog.csdn.net/mm_ren/article/details/117095348
+
+
+3.Sink
+
 

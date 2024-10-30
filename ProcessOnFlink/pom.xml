@@ -34,9 +34,10 @@
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-jdbc</artifactId>
-            <version>1.15.4</version>
-            <scope>test</scope>
+            <version>3.2.0-1.19</version>
+<!--            <scope>test</scope>-->
         </dependency>
+
 
         <dependency>
             <groupId>org.projectlombok</groupId>

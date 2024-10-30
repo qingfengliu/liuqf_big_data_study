@@ -10,15 +10,25 @@ import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.connector.jdbc.JdbcConnectionOptions;
+import org.apache.flink.connector.jdbc.JdbcExecutionOptions;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction;
+import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
+import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 import org.json.JSONObject;
+import org.apache.flink.connector.jdbc.JdbcSink;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 
 //xiaofei_kuanb
 
@@ -29,9 +39,10 @@ public class UsingCoGroupJoin {
     public static class Sale{
         String name;
         String address;
+        String restaurant;
         String food;
-        double price;
         int count;
+        double price;
         double gmv;
         long tm;
 
@@ -40,6 +51,7 @@ public class UsingCoGroupJoin {
             return "{" +
                     "name:'" + name + '\'' +
                     ", address:'" + address + '\'' +
+                    ", restaurant:'" + restaurant + '\'' +
                     ", food:'" + food + '\'' +
                     ", price:" + price +
                     ", count:" + count +
@@ -54,6 +66,7 @@ public class UsingCoGroupJoin {
     public static class Person{
         String name;
         String address;
+        String phone;
         String email;
         String job;
         String company;
@@ -64,6 +77,7 @@ public class UsingCoGroupJoin {
             return "{" +
                     "name:'" + name + '\'' +
                     ", address:'" + address + '\'' +
+                    ", phone:'" + phone + '\'' +
                     ", email:'" + email + '\'' +
                     ", job:'" + job + '\'' +
                     ", company:'" + company + '\'' +
@@ -77,25 +91,29 @@ public class UsingCoGroupJoin {
     public static class SalePerson{
         String name;
         String address;
+        String restaurant;
         String food;
         double price;
         int count;
         double gmv;
         String email;
+        String phone;
         String job;
         String company;
         long tm;
-//静态内部类可以new
+        //静态内部类可以new
         @Override
         public String toString() {
             return "{" +
                     "name:'" + name + '\'' +
                     ", address:'" + address + '\'' +
+                    ", restaurant:'" + restaurant + '\'' +
                     ", food:'" + food + '\'' +
                     ", price:" + price +
                     ", count:" + count +
                     ", gmv:" + gmv +
                     ", email:'" + email + '\'' +
+                    ", phone:'" + phone + '\'' +
                     ", job:'" + job + '\'' +
                     ", company:'" + company + '\'' +
                     ", tm:" + tm +
@@ -103,6 +121,51 @@ public class UsingCoGroupJoin {
         }
     }
 
+    //方式1,使用富函数写入到mysql,但是后续这种方式会被废弃
+    public static class MySqlSinkFunction extends RichSinkFunction<SalePerson> {
+
+        private PreparedStatement preparedStatement = null;
+
+        private Connection connection = null;
+
+        @Override
+        public void open(Configuration parameters) throws Exception {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            String url = "jdbc:mysql://192.168.0.6:3306/random_data";
+            String username = "root";
+            String password = "111111";
+            connection = DriverManager.getConnection(url, username, password);
+            String sql = "INSERT INTO xiaofei_kuanb(name,address,restaurant,food,price,count,gmv,email,phone,job,company,tm) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+            preparedStatement = connection.prepareStatement(sql);
+        }
+
+        @Override
+        public void invoke(SalePerson value, Context context) throws Exception {
+            preparedStatement.setString(1, value.getName());
+            preparedStatement.setString(2, value.getAddress());
+            preparedStatement.setString(3, value.getRestaurant());
+            preparedStatement.setString(4, value.getFood());
+            preparedStatement.setDouble(5, value.getPrice());
+            preparedStatement.setInt(6, value.getCount());
+            preparedStatement.setDouble(7, value.getGmv());
+            preparedStatement.setString(8, value.getEmail());
+            preparedStatement.setString(9, value.getPhone());
+            preparedStatement.setString(10, value.getJob());
+            preparedStatement.setString(11, value.getCompany());
+            preparedStatement.setLong(12, value.getTm());
+            preparedStatement.executeUpdate();
+        }
+
+        @Override
+        public void close() throws Exception {
+            if (null != connection) {
+                connection.close();
+            }
+            if (null != preparedStatement) {
+                preparedStatement.close();
+            }
+        }
+    }
     //初始化两个数据源，将数据装载到两个结构体中。并设置时间戳和水印
     public static Tuple2<DataStream, DataStream> setup(StreamExecutionEnvironment env){
         //sale data source
@@ -124,6 +187,7 @@ public class UsingCoGroupJoin {
                 Sale sale_data = new Sale();
                 sale_data.setName(jsonObject.getString("name"));
                 sale_data.setAddress(jsonObject.getString("address"));
+                sale_data.setRestaurant(jsonObject.getString("restaurant"));
                 sale_data.setFood(jsonObject.getString("food"));
                 sale_data.setPrice(jsonObject.getDouble("price"));
                 sale_data.setCount(jsonObject.getInt("count"));
@@ -155,6 +219,7 @@ public class UsingCoGroupJoin {
                 Person person_data = new Person();
                 person_data.setName(jsonObject.getString("name"));
                 person_data.setAddress(jsonObject.getString("address"));
+                person_data.setPhone(jsonObject.getString("phone"));
                 person_data.setEmail(jsonObject.getString("email"));
                 person_data.setJob(jsonObject.getString("job"));
                 person_data.setCompany(jsonObject.getString("company"));
@@ -214,12 +279,14 @@ public class UsingCoGroupJoin {
             //将两个数据源的数据合并。如果某个变量a b均有以a为准
             SalePerson salePerson = new SalePerson();
             salePerson.setName(first.getName());
+            salePerson.setRestaurant(first.getRestaurant());
             salePerson.setAddress(first.getAddress());
             salePerson.setFood(first.getFood());
             salePerson.setPrice(first.getPrice());
             salePerson.setCount(first.getCount());
             salePerson.setGmv(first.getGmv());
             salePerson.setEmail(second.getEmail());
+            salePerson.setPhone(second.getPhone());
             salePerson.setJob(second.getJob());
             salePerson.setCompany(second.getCompany());
             salePerson.setTm(first.getTm());
@@ -313,11 +380,12 @@ public class UsingCoGroupJoin {
     }
 
     public static void main(String[] args) {
+
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         Tuple2<DataStream, DataStream> to_stream = setup(env);
         DataStream<Sale> sale_data = to_stream.f0;
         DataStream<Person> person_data = to_stream.f1;
-        sale_data.keyBy(new KeySelector<Sale, String>() {
+        SingleOutputStreamOperator<SalePerson> chuli=sale_data.keyBy(new KeySelector<Sale, String>() {
             @Override
             public String getKey(Sale value) throws Exception {
                 return value.getName();
@@ -334,7 +402,39 @@ public class UsingCoGroupJoin {
                         return value;
                     }
                 }
-        ).print();
+        );
+//        chuli.addSink(new MySqlSinkFunction());//富函数
+        //方式2，使用jdbc sink写入到mysql
+        SinkFunction<SalePerson> mysqlsink=JdbcSink.sink("INSERT INTO xiaofei_kuanb(name,address,restaurant,food,price,count,gmv,email,phone,job,company,tm) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+                (ps, t) -> {
+                    ps.setString(1, t.getName());
+                    ps.setString(2, t.getAddress());
+                    ps.setString(3, t.getRestaurant());
+                    ps.setString(4, t.getFood());
+                    ps.setDouble(5, t.getPrice());
+                    ps.setInt(6, t.getCount());
+                    ps.setDouble(7, t.getGmv());
+                    ps.setString(8, t.getEmail());
+                    ps.setString(9, t.getPhone());
+                    ps.setString(10, t.getJob());
+                    ps.setString(11, t.getCompany());
+                    ps.setLong(12, t.getTm());
+                },
+                JdbcExecutionOptions.builder()
+                        .withMaxRetries(3) // 重试次数
+                        .withBatchSize(100) // 批次的大小：条数
+                        .withBatchIntervalMs(3000) // 批次的时间
+                        .build(),
+        new JdbcConnectionOptions.JdbcConnectionOptionsBuilder()
+                .withUrl("jdbc:mysql://192.168.0.6:3306/random_data")
+                .withUsername("root")
+                .withPassword("111111")
+                .withConnectionCheckTimeoutSeconds(60) // 重试的超时时间
+                .build()
+
+        );
+        chuli.addSink(mysqlsink);
+        chuli.print();
 
         try {
             env.execute("Flink Streaming Java API Skeleton");
