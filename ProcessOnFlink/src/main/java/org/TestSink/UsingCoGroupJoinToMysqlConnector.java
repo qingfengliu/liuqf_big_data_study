@@ -1,5 +1,6 @@
 package org.TestSink;
 
+import com.mysql.cj.jdbc.MysqlXADataSource;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
@@ -20,16 +21,20 @@ import org.apache.flink.streaming.api.functions.co.CoProcessFunction;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
+import org.apache.flink.connector.jdbc.JdbcSink;
+import org.apache.flink.connector.jdbc.JdbcStatementBuilder;
+import org.apache.flink.connector.jdbc.JdbcConnectionOptions;
+import org.apache.flink.connector.jdbc.JdbcExactlyOnceOptions;
+import org.apache.flink.connector.jdbc.JdbcExecutionOptions;
 import org.json.JSONObject;
+
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-//xiaofei_kuanb
-
-public class UsingCoGroupJoinToMysqlRich {
-
+public class UsingCoGroupJoinToMysqlConnector {
     @Getter
     @Setter
     public static class Sale{
@@ -119,51 +124,6 @@ public class UsingCoGroupJoinToMysqlRich {
         }
     }
 
-    //
-    public static class MySqlSinkFunction extends RichSinkFunction<SalePerson> {
-
-        private PreparedStatement preparedStatement = null;
-
-        private Connection connection = null;
-
-        @Override
-        public void open(Configuration parameters) throws Exception {
-            String url = "jdbc:mysql://192.168.212.133:3306/random_data";
-            String username = "root";
-            String password = "111111";
-            connection = DriverManager.getConnection(url, username, password);
-            String sql = "INSERT INTO xiaofei_kuanb(name,address,restaurant,food,price,count,gmv,email,phone,job,company,tm,dt) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
-            preparedStatement = connection.prepareStatement(sql);
-        }
-
-        @Override
-        public void invoke(SalePerson value, Context context) throws Exception {
-            preparedStatement.setString(1, value.getName());
-            preparedStatement.setString(2, value.getAddress());
-            preparedStatement.setString(3, value.getRestaurant());
-            preparedStatement.setString(4, value.getFood());
-            preparedStatement.setDouble(5, value.getPrice());
-            preparedStatement.setInt(6, value.getCount());
-            preparedStatement.setDouble(7, value.getGmv());
-            preparedStatement.setString(8, value.getEmail());
-            preparedStatement.setString(9, value.getPhone());
-            preparedStatement.setString(10, value.getJob());
-            preparedStatement.setString(11, value.getCompany());
-            preparedStatement.setLong(12, value.getTm());
-            preparedStatement.setString(13, value.getDt());
-            preparedStatement.executeUpdate();
-        }
-
-        @Override
-        public void close() throws Exception {
-            if (null != connection) {
-                connection.close();
-            }
-            if (null != preparedStatement) {
-                preparedStatement.close();
-            }
-        }
-    }
     //初始化两个数据源，将数据装载到两个结构体中。并设置时间戳和水印
     public static Tuple2<DataStream, DataStream> setup(StreamExecutionEnvironment env){
         //sale data source
@@ -232,7 +192,7 @@ public class UsingCoGroupJoinToMysqlRich {
         return new Tuple2<DataStream,DataStream>(sale_data,person_data);
     }
 
-    public static class myCoProcessFunction extends CoProcessFunction<Sale,Person, SalePerson>{
+    public static class myCoProcessFunction extends CoProcessFunction<Sale, Person, SalePerson> {
 
         private static final long WAIT_TIME = 5000L;
 
@@ -288,6 +248,8 @@ public class UsingCoGroupJoinToMysqlRich {
             salePerson.setJob(second.getJob());
             salePerson.setCompany(second.getCompany());
             salePerson.setTm(first.getTm());
+            //字符串时间格式为yyyy-mm-dd
+            salePerson.setDt(new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date(first.getTm())));
             return salePerson;
         }
 
@@ -377,6 +339,8 @@ public class UsingCoGroupJoinToMysqlRich {
 
     }
 
+
+
     public static void main(String[] args) {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -401,7 +365,42 @@ public class UsingCoGroupJoinToMysqlRich {
                     }
                 }
         );
-        chuli.addSink(new MySqlSinkFunction());//这里已经不会出发ontimer,并且主输出流不会等待流水线超时而向sink输出
+
+
+//        chuli.addSink(new MySqlSinkFunction());//这里已经不会出发ontimer,并且主输出流不会等待流水线超时而向sink输出
+        chuli.addSink(JdbcSink.sink(
+                "INSERT INTO xiaofei_kuanb(name,address,restaurant,food,price,count,gmv,email,phone,job,company,tm,dt) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                new JdbcStatementBuilder<SalePerson>() {
+                    @Override
+                    public void accept(PreparedStatement preparedStatement, SalePerson salePerson) throws SQLException {
+                        preparedStatement.setString(1, salePerson.getName());
+                        preparedStatement.setString(2, salePerson.getAddress());
+                        preparedStatement.setString(3, salePerson.getRestaurant());
+                        preparedStatement.setString(4, salePerson.getFood());
+                        preparedStatement.setDouble(5, salePerson.getPrice());
+                        preparedStatement.setInt(6, salePerson.getCount());
+                        preparedStatement.setDouble(7, salePerson.getGmv());
+                        preparedStatement.setString(8, salePerson.getEmail());
+                        preparedStatement.setString(9, salePerson.getPhone());
+                        preparedStatement.setString(10, salePerson.getJob());
+                        preparedStatement.setString(11, salePerson.getCompany());
+                        preparedStatement.setLong(12, salePerson.getTm());
+                        preparedStatement.setString(13, salePerson.getDt());
+                    }
+                }
+                ,
+                JdbcExecutionOptions.builder()
+                        .withMaxRetries(0)
+                        .withBatchSize(1)//有写缓冲,程序停止会将缓冲区写入
+                        .build(),
+                //JdbcConnectionOptions没提供工厂方法
+                new JdbcConnectionOptions.JdbcConnectionOptionsBuilder()
+                        .withUrl("jdbc:mysql://192.168.212.133:3306/random_data")
+                        .withDriverName("com.mysql.cj.jdbc.Driver")
+                        .withUsername("root")
+                        .withPassword("111111")
+                        .build()
+        ));
         chuli.print();
 
         try {
@@ -410,5 +409,4 @@ public class UsingCoGroupJoinToMysqlRich {
             e.printStackTrace();
         }
     }
-
 }

@@ -9,7 +9,7 @@ import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.common.state.MapStateDescriptor;
 import org.apache.flink.api.common.state.ReadOnlyBroadcastState;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
-import org.apache.flink.api.java.io.jdbc.JDBCInputFormat;
+
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
@@ -23,7 +23,7 @@ import org.apache.flink.streaming.api.functions.co.BroadcastProcessFunction;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.Collector;
 import org.json.JSONObject;
-
+import org.apache.flink.connector.jdbc.JdbcInputFormat;
 import java.util.Iterator;
 
 public class Test3 {
@@ -51,20 +51,23 @@ public class Test3 {
         });
 
         //从mysql中取person数据
-        DataStreamSource<Row> dataInput = env.createInput(JDBCInputFormat.buildJDBCInputFormat()
-                .setDrivername("com.mysql.cj.jdbc.Driver")
-                .setDBUrl("jdbc:mysql://hadoop1:3306/random_data")
-                .setUsername("root")
-                .setPassword("111111")
-                .setQuery("SELECT name,address,phone,email,company,job from random_data.person_data")
-                .setRowTypeInfo(new RowTypeInfo(
-                        BasicTypeInfo.STRING_TYPE_INFO,
-                        BasicTypeInfo.STRING_TYPE_INFO,
-                        BasicTypeInfo.STRING_TYPE_INFO,
-                        BasicTypeInfo.STRING_TYPE_INFO,
-                        BasicTypeInfo.STRING_TYPE_INFO,
-                        BasicTypeInfo.STRING_TYPE_INFO
-                )).finish());
+        DataStreamSource<Row> dataInput = env.createInput(
+                //使用新的包flink-connector-jdbc读取mysql数据
+                JdbcInputFormat.buildJdbcInputFormat()
+                        .setDrivername("com.mysql.cj.jdbc.Driver")
+                        .setDBUrl("jdbc:mysql://hadoop1:3306/random_data")
+                        .setUsername("root")
+                        .setPassword("111111")
+                        .setQuery("")
+                        .setRowTypeInfo(new RowTypeInfo(
+                                BasicTypeInfo.STRING_TYPE_INFO,
+                                BasicTypeInfo.STRING_TYPE_INFO,
+                                BasicTypeInfo.STRING_TYPE_INFO,
+                                BasicTypeInfo.STRING_TYPE_INFO,
+                                BasicTypeInfo.STRING_TYPE_INFO,
+                                BasicTypeInfo.STRING_TYPE_INFO
+                        )).finish()
+        );
 
         DataStream<Tuple2<String,Student>> person_data = dataInput.map(new MapFunction<Row, Student>() {
             @Override
