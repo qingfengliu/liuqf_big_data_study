@@ -17,4 +17,21 @@ person_random_data
     但是我看通过修改也能实现笛卡尔积。
 
 
-下一步了解一下ProcessWindowFunction、
+下一步了解一下ProcessWindowFunction
+
+3.xiaofei_kuanb的mysql建表语句
+CREATE TABLE `xiaofei_kuanb` (
+  `name` varchar(500) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `restaurant` varchar(255) DEFAULT NULL,
+  `food` varchar(255) DEFAULT NULL,
+  `price` double DEFAULT NULL,
+  `count` int(11) DEFAULT NULL,
+  `gmv` double DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `job` varchar(255) DEFAULT NULL,
+  `company` varchar(255) DEFAULT NULL,
+  `tm` double DEFAULT NULL,
+  `dt` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
