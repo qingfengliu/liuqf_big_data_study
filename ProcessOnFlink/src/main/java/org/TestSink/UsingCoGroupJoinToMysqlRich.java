@@ -28,7 +28,7 @@ import java.sql.PreparedStatement;
 
 //xiaofei_kuanb
 
-public class UsingCoGroupJoin {
+public class UsingCoGroupJoinToMysqlRich {
 
     @Getter
     @Setter
