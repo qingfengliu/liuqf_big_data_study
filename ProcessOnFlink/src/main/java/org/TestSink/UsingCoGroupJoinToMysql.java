@@ -10,8 +10,6 @@ import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.connector.jdbc.JdbcConnectionOptions;
-import org.apache.flink.connector.jdbc.JdbcExecutionOptions;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -20,19 +18,19 @@ import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
-import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 import org.json.JSONObject;
-import org.apache.flink.connector.jdbc.JdbcSink;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 //xiaofei_kuanb
 
-public class UsingCoGroupJoin {
+public class UsingCoGroupJoinToMysql {
 
     @Getter
     @Setter
@@ -100,7 +98,10 @@ public class UsingCoGroupJoin {
         String phone;
         String job;
         String company;
+
         long tm;
+        String dt;
+
         //静态内部类可以new
         @Override
         public String toString() {
@@ -117,11 +118,12 @@ public class UsingCoGroupJoin {
                     ", job:'" + job + '\'' +
                     ", company:'" + company + '\'' +
                     ", tm:" + tm +
+                    ", dt:'" + dt + '\'' +
                     '}';
         }
     }
 
-    //方式1,使用富函数写入到mysql,但是后续这种方式会被废弃
+    //sink
     public static class MySqlSinkFunction extends RichSinkFunction<SalePerson> {
 
         private PreparedStatement preparedStatement = null;
@@ -130,12 +132,11 @@ public class UsingCoGroupJoin {
 
         @Override
         public void open(Configuration parameters) throws Exception {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            String url = "jdbc:mysql://192.168.0.6:3306/random_data";
+            String url = "jdbc:mysql://192.168.0.6/random_data";
             String username = "root";
             String password = "111111";
             connection = DriverManager.getConnection(url, username, password);
-            String sql = "INSERT INTO xiaofei_kuanb(name,address,restaurant,food,price,count,gmv,email,phone,job,company,tm) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO xiaofei_kuanb(name,address,restaurant,food,price,count,gmv,email,phone,job,company,tm,dt) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
             preparedStatement = connection.prepareStatement(sql);
         }
 
@@ -153,6 +154,7 @@ public class UsingCoGroupJoin {
             preparedStatement.setString(10, value.getJob());
             preparedStatement.setString(11, value.getCompany());
             preparedStatement.setLong(12, value.getTm());
+            preparedStatement.setString(13, value.getDt());
             preparedStatement.executeUpdate();
         }
 
@@ -166,6 +168,7 @@ public class UsingCoGroupJoin {
             }
         }
     }
+
     //初始化两个数据源，将数据装载到两个结构体中。并设置时间戳和水印
     public static Tuple2<DataStream, DataStream> setup(StreamExecutionEnvironment env){
         //sale data source
@@ -183,6 +186,7 @@ public class UsingCoGroupJoin {
         DataStream<Sale> sale_data = lines.map(new MapFunction<String, Sale>() {
             @Override
             public Sale map(String value) {
+
                 JSONObject jsonObject = new JSONObject(value);
                 Sale sale_data = new Sale();
                 sale_data.setName(jsonObject.getString("name"));
@@ -277,6 +281,11 @@ public class UsingCoGroupJoin {
 
         public SalePerson chuli(Sale first, Person second) throws Exception {
             //将两个数据源的数据合并。如果某个变量a b均有以a为准
+            //暂时放在这里,后续放到数据生成器中加入dt
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDateTime dateTime = LocalDateTime.now();
+            String formattedDateTime = dateTime.format(formatter);
+
             SalePerson salePerson = new SalePerson();
             salePerson.setName(first.getName());
             salePerson.setRestaurant(first.getRestaurant());
@@ -290,6 +299,7 @@ public class UsingCoGroupJoin {
             salePerson.setJob(second.getJob());
             salePerson.setCompany(second.getCompany());
             salePerson.setTm(first.getTm());
+            salePerson.setDt(formattedDateTime);
             return salePerson;
         }
 
@@ -403,37 +413,7 @@ public class UsingCoGroupJoin {
                     }
                 }
         );
-//        chuli.addSink(new MySqlSinkFunction());//富函数
-        //方式2，使用jdbc sink写入到mysql
-        SinkFunction<SalePerson> mysqlsink=JdbcSink.sink("INSERT INTO xiaofei_kuanb(name,address,restaurant,food,price,count,gmv,email,phone,job,company,tm) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
-                (ps, t) -> {
-                    ps.setString(1, t.getName());
-                    ps.setString(2, t.getAddress());
-                    ps.setString(3, t.getRestaurant());
-                    ps.setString(4, t.getFood());
-                    ps.setDouble(5, t.getPrice());
-                    ps.setInt(6, t.getCount());
-                    ps.setDouble(7, t.getGmv());
-                    ps.setString(8, t.getEmail());
-                    ps.setString(9, t.getPhone());
-                    ps.setString(10, t.getJob());
-                    ps.setString(11, t.getCompany());
-                    ps.setLong(12, t.getTm());
-                },
-                JdbcExecutionOptions.builder()
-                        .withMaxRetries(3) // 重试次数
-                        .withBatchSize(100) // 批次的大小：条数
-                        .withBatchIntervalMs(3000) // 批次的时间
-                        .build(),
-        new JdbcConnectionOptions.JdbcConnectionOptionsBuilder()
-                .withUrl("jdbc:mysql://192.168.0.6:3306/random_data")
-                .withUsername("root")
-                .withPassword("111111")
-                .withConnectionCheckTimeoutSeconds(60) // 重试的超时时间
-                .build()
-
-        );
-        chuli.addSink(mysqlsink);
+        chuli.addSink(new MySqlSinkFunction());//这里已经不会出发ontimer,并且主输出流不会等待流水线超时而向sink输出
         chuli.print();
 
         try {

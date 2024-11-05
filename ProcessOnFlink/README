@@ -1,29 +1,38 @@
 sale_random_data  两个主题
 person_random_data
 
-1.将sale数据和person数据合并
-
-窗口有三种，滚动窗口，滑动窗口，会话窗口。
 
 
-TumblingEventTimeWindows 滚动窗口,就是跑不过,猜测和时区有关。
-会话窗口：窗口的开始和结束是不固定的，根据数据的时间间隔来确定。
-
-forMonotonousTimestamps 有序数据
-forBoundedOutOfOrderness 乱序数据
-forMonotonousTimestamps是forBoundedOutOfOrderness的特例，是outOfOrdernessMillis为0的特例。
-
-2.流批join
-这个术语应该是维表join
-大致思路有两种：
-1.将维表数据写入到状态中，然后在每个task中进行join
-2.将维表数据广播到每个task中，然后在每个task中进行join
-
-但是具体实现的时候还会根据其他细节有不同的具体实现方式。在不使用sql和table接口的情况下分别进行测试
-https://blog.csdn.net/m0_63475429/article/details/127417649
-https://blog.csdn.net/mm_ren/article/details/117095348
+1.命令备份
+/opt/kafka/bin/kafka-topics.sh --create --topic sale_random_data --bootstrap-server 192.168.0.9:9092
+/opt/kafka/bin/kafka-topics.sh --create --topic person_random_data --bootstrap-server 192.168.0.9:9092
 
 
-3.Sink
+2.试验结论
+(1) timeservice触发试验
+
+    1) 只有connect上了才会改变流水线
+    2) timeservice触发条件是流水线发生变化,并且timeservice的超时时间小于流水线时间。双流中,貌似需要两个流的流水线都变化才会触发timeservice。
+    这实用中就需要注意了,如果乱序十分严重。某条数据拉低高了流水线,并且其后的数据均小于流水线,那么timeservice就不会触发。内存中的数据就会越来越多。
+    3) 按目前UsingCoGroupFunction的实现,如果同一时间A流有两条数据进来,那么timeservice只会触发一次,并且还不能笛卡尔积,join的结果为最新的一条数据。
+    但是我看通过修改也能实现笛卡尔积。
 
 
+下一步了解一下ProcessWindowFunction
+
+3.xiaofei_kuanb的mysql建表语句
+CREATE TABLE `xiaofei_kuanb` (
+  `name` varchar(500) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `restaurant` varchar(255) DEFAULT NULL,
+  `food` varchar(255) DEFAULT NULL,
+  `price` double DEFAULT NULL,
+  `count` int(11) DEFAULT NULL,
+  `gmv` double DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `job` varchar(255) DEFAULT NULL,
+  `company` varchar(255) DEFAULT NULL,
+  `tm` double DEFAULT NULL,
+  `dt` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
