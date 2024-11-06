@@ -17,16 +17,19 @@ import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction;
-import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
+
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 import org.json.JSONObject;
+
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.apache.flink.connectors.hive.HiveTableSink;
+
 
 public class UsingCoGroupJoinToHive {
     @Getter
@@ -120,51 +123,7 @@ public class UsingCoGroupJoinToHive {
         }
     }
 
-    //sink
-    public static class MySqlSinkFunction extends RichSinkFunction<SalePerson> {
 
-        private PreparedStatement preparedStatement = null;
-
-        private Connection connection = null;
-
-        @Override
-        public void open(Configuration parameters) throws Exception {
-            String url = "jdbc:mysql://192.168.0.6/random_data";
-            String username = "root";
-            String password = "111111";
-            connection = DriverManager.getConnection(url, username, password);
-            String sql = "INSERT INTO xiaofei_kuanb(name,address,restaurant,food,price,count,gmv,email,phone,job,company,tm,dt) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
-            preparedStatement = connection.prepareStatement(sql);
-        }
-
-        @Override
-        public void invoke(SalePerson value, Context context) throws Exception {
-            preparedStatement.setString(1, value.getName());
-            preparedStatement.setString(2, value.getAddress());
-            preparedStatement.setString(3, value.getRestaurant());
-            preparedStatement.setString(4, value.getFood());
-            preparedStatement.setDouble(5, value.getPrice());
-            preparedStatement.setInt(6, value.getCount());
-            preparedStatement.setDouble(7, value.getGmv());
-            preparedStatement.setString(8, value.getEmail());
-            preparedStatement.setString(9, value.getPhone());
-            preparedStatement.setString(10, value.getJob());
-            preparedStatement.setString(11, value.getCompany());
-            preparedStatement.setLong(12, value.getTm());
-            preparedStatement.setString(13, value.getDt());
-            preparedStatement.executeUpdate();
-        }
-
-        @Override
-        public void close() throws Exception {
-            if (null != connection) {
-                connection.close();
-            }
-            if (null != preparedStatement) {
-                preparedStatement.close();
-            }
-        }
-    }
 
     //初始化两个数据源，将数据装载到两个结构体中。并设置时间戳和水印
     public static Tuple2<DataStream, DataStream> setup(StreamExecutionEnvironment env){
@@ -410,7 +369,11 @@ public class UsingCoGroupJoinToHive {
                     }
                 }
         );
-        chuli.addSink(new MySqlSinkFunction());//这里已经不会出发ontimer,并且主输出流不会等待流水线超时而向sink输出
+        hiveTableSink=HiveTableSink.builder()
+                .setHost("
+
+        chuli.addSink(hiveTableSink);
+
         chuli.print();
 
         try {

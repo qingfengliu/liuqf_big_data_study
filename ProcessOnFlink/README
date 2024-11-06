@@ -36,3 +36,29 @@ CREATE TABLE `xiaofei_kuanb` (
   `tm` double DEFAULT NULL,
   `dt` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+4.建hive表
+CREATE  TABLE random_data.xiaofei_kuanb(
+  `name` string,
+  `address` string,
+  `restaurant` string,
+  `food` string,
+  `price` double,
+  `count` INT,
+  `gmv` double,
+  `email` string,
+  `phone` string,
+  `job` string,
+  `company` string,
+  `tm` double
+)
+PARTITIONED BY (`dt` string COMMENT '分区字段')
+STORED AS ORC
+;
+
+调研了flink连接hive的方式。
+	目前有这么集中。
+	(1) jdbc 不适合,会产生小文件问题。并且找的例子里用了富函数暂不尝试。
+	(2) 写入hdfs,hive用外表读取hdfs数据。
+	(3) 将datastream转换成table,然后用flink-connect-hive里提供的HiveCatalog读写
+	
