@@ -62,3 +62,6 @@ CREATE EXTERNAL TABLE random_data.xiaofei_kuanb(
 PARTITIONED BY (`dt` string COMMENT '分区字段')
 STORED AS ORC
 ;
+
+分区需要在插入语句中指定格式否则hive会查不到数据
+ALTER table random_data.xiaofei_kuanb  add partition(dt='2024-11-08') location '/opt/hive/warehouse/random_data.db/xiaofei_kuanb/2024-11-08';

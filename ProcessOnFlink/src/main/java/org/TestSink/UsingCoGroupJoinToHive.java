@@ -1,10 +1,8 @@
 package org.TestSink;
-
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.MapFunction;
-import org.apache.flink.api.common.serialization.SimpleStringEncoder;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.common.state.ValueState;
 import org.apache.flink.api.common.state.ValueStateDescriptor;
@@ -13,34 +11,24 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
-import org.apache.flink.core.fs.Path;
-import org.apache.flink.orc.vector.Vectorizer;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction;
 
-import org.apache.flink.streaming.api.functions.sink.filesystem.OutputFileConfig;
-
-import org.apache.flink.streaming.api.functions.sink.filesystem.bucketassigners.DateTimeBucketAssigner;
+import org.apache.flink.table.api.Table;
+import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+import org.apache.flink.table.catalog.hive.HiveCatalog;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 import org.json.JSONObject;
-import java.io.IOException;
-import java.io.Serializable;
+
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import org.apache.flink.connector.file.sink.FileSink;
-import org.apache.flink.streaming.api.functions.sink.filesystem.rollingpolicies.OnCheckpointRollingPolicy;
-import org.apache.flink.orc.writer.OrcBulkWriterFactory;
-import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
-import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
-import org.apache.hadoop.hive.ql.exec.vector.DoubleColumnVector;
-import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
-
-public class UsingCoGroupJoinToHdfs {
+public class UsingCoGroupJoinToHive {
     @Getter
     @Setter
     public static class Sale{
@@ -354,50 +342,13 @@ public class UsingCoGroupJoinToHdfs {
 
     }
 
-    public static class SalePersonVectorizer extends Vectorizer<SalePerson> implements Serializable {
-
-        public SalePersonVectorizer(String schema) {
-            super(schema);
-        }
-
-        @Override
-        public void vectorize(SalePerson salePerson, VectorizedRowBatch batch) throws IOException {
-            //将数据写入到vectorizedRowBatch中
-
-            int row = batch.size++;
-            //name
-
-            ((BytesColumnVector) batch.cols[0]).setVal(row, salePerson.getName().getBytes());
-            //address
-            ((BytesColumnVector) batch.cols[1]).setVal(row, salePerson.getAddress().getBytes());
-            //restaurant
-            ((BytesColumnVector) batch.cols[2]).setVal(row, salePerson.getRestaurant().getBytes());
-            //food
-            ((BytesColumnVector) batch.cols[3]).setVal(row, salePerson.getFood().getBytes());
-            //price
-            ((DoubleColumnVector) batch.cols[4]).vector[row] = salePerson.getPrice();
-            //count
-            ((LongColumnVector) batch.cols[5]).vector[row] = salePerson.getCount();
-            //gmv
-            ((DoubleColumnVector) batch.cols[6]).vector[row] = salePerson.getGmv();
-            //email
-            ((BytesColumnVector) batch.cols[7]).setVal(row, salePerson.getEmail().getBytes());
-            //phone
-            ((BytesColumnVector) batch.cols[8]).setVal(row, salePerson.getPhone().getBytes());
-            //job
-            ((BytesColumnVector) batch.cols[9]).setVal(row, salePerson.getJob().getBytes());
-            //company
-            ((BytesColumnVector) batch.cols[10]).setVal(row, salePerson.getCompany().getBytes());
-            //tm
-            ((LongColumnVector) batch.cols[11]).vector[row] = salePerson.getTm();
-            //dt
-            ((BytesColumnVector) batch.cols[12]).setVal(row, salePerson.getDt().getBytes());
-        }
-    }
     public static void main(String[] args) {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.getCheckpointConfig().setCheckpointInterval(1000);
+        env.enableCheckpointing(1000);//加入checkpoint才能在hive表里查到数据。原理待研究
+        StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
+        //tableEnv.getConfig().set("sink.partition-commit.policy.kind", "metastore,success-file");
+
         Tuple2<DataStream, DataStream> to_stream = setup(env);
         DataStream<Sale> sale_data = to_stream.f0;
         DataStream<Person> person_data = to_stream.f1;
@@ -420,24 +371,38 @@ public class UsingCoGroupJoinToHdfs {
                 }
         );
 
-        //设置输出文件的前缀和后缀
-        OutputFileConfig flie_config = OutputFileConfig
-                .builder()
-                .withPartPrefix("part")
-                .withPartSuffix(".orc")
-                .build();
-        //hdfs://192.168.0.11:9000/opt/hive/warehouse/random_data.db/xiaofei_kuanb
-        //sink到hdfs,写入文件格式为orc
-        String schema = "struct<name:string,address:string,restaurant:string,food:string,price:double,count:int,gmv:double,email:string,phone:string,job:string,company:string,tm:bigint,dt:string>";
-        OrcBulkWriterFactory<SalePerson> factory = new OrcBulkWriterFactory<>(new SalePersonVectorizer(schema));
-        FileSink<SalePerson> sink = FileSink.forBulkFormat(new Path("hdfs:/opt/hive/warehouse/random_data.db/xiaofei_kuanb")
-                        , factory)
-                .withBucketAssigner(new DateTimeBucketAssigner<>("yyyy-MM-dd"))
-                .withOutputFileConfig(flie_config)
-                .withRollingPolicy(OnCheckpointRollingPolicy.build())
-                .build();
-        chuli.sinkTo(sink);
-        chuli.print();
+
+        // 配置HiveCatalog
+        String name            = "hive"; // Catalog名称
+        String defaultDatabase = "random_data"; // 默认数据库
+        String hiveConfDir      = "hdfs:///conf"; // Hive配置文件在HDFS上的路径
+
+        HiveCatalog hive = new HiveCatalog(name, defaultDatabase, hiveConfDir);
+        tableEnv.registerCatalog(name, hive);
+        tableEnv.useCatalog(name);
+        Table table =tableEnv.fromDataStream(chuli);
+        tableEnv.createTemporaryView("sourceTable", table);
+
+        //这里输出列顺序要和hive表的列顺序一致
+        tableEnv.executeSql("INSERT INTO random_data.xiaofei_kuanb2 \n" +
+                //"partition(dt=dt)\n" +
+                "SELECT " +
+                "name\n" +
+                ",address\n" +
+                ",restaurant\n" +
+                ",food\n" +
+                ",price\n" +
+                ",`count`\n" +
+                ",gmv\n" +
+                ",email\n" +
+                ",phone\n" +
+                ",job\n" +
+                ",company\n" +
+                ",tm\n" +
+                ",dt" +
+                " FROM sourceTable");
+
+        tableEnv.toDataStream(table).print();
 
         try {
             env.execute("Flink Streaming Java API Skeleton");
@@ -446,3 +411,4 @@ public class UsingCoGroupJoinToHdfs {
         }
     }
 }
+//https://blog.csdn.net/yang_shibiao/article/details/122768209
