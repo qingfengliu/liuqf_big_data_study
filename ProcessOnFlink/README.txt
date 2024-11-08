@@ -2,10 +2,9 @@ sale_random_data  两个主题
 person_random_data
 
 
-
 1.命令备份
-/opt/kafka/bin/kafka-topics.sh --create --topic sale_random_data --bootstrap-server 192.168.0.9:9092
-/opt/kafka/bin/kafka-topics.sh --create --topic person_random_data --bootstrap-server 192.168.0.9:9092
+/opt/kafka/bin/kafka-console-producer.sh --topic sale_random_data --broker-list 192.168.0.9:9092
+/opt/kafka/bin/kafka-console-producer.sh --topic person_random_data --broker-list 192.168.0.9:9092
 
 
 2.试验结论
@@ -21,24 +20,32 @@ person_random_data
 下一步了解一下ProcessWindowFunction
 
 3.xiaofei_kuanb的mysql建表语句
-CREATE TABLE `xiaofei_kuanb` (
-  `name` varchar(500) DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL,
-  `restaurant` varchar(255) DEFAULT NULL,
-  `food` varchar(255) DEFAULT NULL,
-  `price` double DEFAULT NULL,
-  `count` int(11) DEFAULT NULL,
-  `gmv` double DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `phone` varchar(255) DEFAULT NULL,
-  `job` varchar(255) DEFAULT NULL,
-  `company` varchar(255) DEFAULT NULL,
-  `tm` double DEFAULT NULL,
-  `dt` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+drop table `random_data.xiaofei_kuanb2`;
+CREATE TABLE `random_data.xiaofei_kuanb2`(
+  `name` string,
+  `address` string,
+  `restaurant` string,
+  `food` string,
+  `price` double,
+  `count` int,
+  `gmv` double,
+  `email` string,
+  `phone` string,
+  `job` string,
+  `company` string,
+  `tm` double)
+PARTITIONED BY (`dt` string)
 
-4.建hive表
-CREATE  TABLE random_data.xiaofei_kuanb(
+STORED AS PARQUET
+;
+
+alter table random_data.xiaofei_kuanb2 set TBLPROPERTIES ('sink.partition-commit.policy.kind'='metastore,success-file');
+
+查询的时候使用MSCK REPAIR TABLE random_data.xiaofei_kuanb2
+才能查到数据SELECT * FROM random_data.xiaofei_kuanb2
+
+4.hive外表
+CREATE EXTERNAL TABLE random_data.xiaofei_kuanb(
   `name` string,
   `address` string,
   `restaurant` string,
@@ -61,4 +68,3 @@ STORED AS ORC
 	(1) jdbc 不适合,会产生小文件问题。并且找的例子里用了富函数暂不尝试。
 	(2) 写入hdfs,hive用外表读取hdfs数据。
 	(3) 将datastream转换成table,然后用flink-connect-hive里提供的HiveCatalog读写
-	

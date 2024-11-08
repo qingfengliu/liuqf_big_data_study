@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.api.common.serialization.Encoder;
+import org.apache.flink.api.common.serialization.SimpleStringEncoder;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.common.state.ValueState;
 import org.apache.flink.api.common.state.ValueStateDescriptor;
@@ -12,26 +14,28 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
+import org.apache.flink.core.fs.Path;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction;
 
+import org.apache.flink.streaming.api.functions.sink.filesystem.OutputFileConfig;
+
+import org.apache.flink.streaming.api.functions.sink.filesystem.bucketassigners.DateTimeBucketAssigner;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 import org.json.JSONObject;
 
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import org.apache.flink.connectors.hive.HiveTableSink;
 
+import org.apache.flink.connector.file.sink.FileSink;
+import org.apache.flink.streaming.api.functions.sink.filesystem.rollingpolicies.OnCheckpointRollingPolicy;
 
-public class UsingCoGroupJoinToHive {
+public class UsingCoGroupJoinToHdfs {
     @Getter
     @Setter
     public static class Sale{
@@ -348,6 +352,7 @@ public class UsingCoGroupJoinToHive {
     public static void main(String[] args) {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        env.getCheckpointConfig().setCheckpointInterval(1000);
         Tuple2<DataStream, DataStream> to_stream = setup(env);
         DataStream<Sale> sale_data = to_stream.f0;
         DataStream<Person> person_data = to_stream.f1;
@@ -369,11 +374,21 @@ public class UsingCoGroupJoinToHive {
                     }
                 }
         );
-        hiveTableSink=HiveTableSink.builder()
-                .setHost("
+        OutputFileConfig flie_config = OutputFileConfig
+                .builder()
+                .withPartPrefix("part")
+                .withPartSuffix(".orc")
+                .build();
+        //hdfs://192.168.0.11:9000/opt/hive/warehouse/random_data.db/xiaofei_kuanb
+        //sink到hdfs,写入文件格式为orc
 
-        chuli.addSink(hiveTableSink);
-
+        FileSink<SalePerson> sink = FileSink.<SalePerson>forRowFormat(new Path("hdfs://192.168.0.11:9000/opt/hive/warehouse/random_data.db/xiaofei_kuanb")
+                        , new SimpleStringEncoder<SalePerson>("UTF-8"))
+                .withBucketAssigner(new DateTimeBucketAssigner<>("yyyy-MM-dd"))
+                .withRollingPolicy(OnCheckpointRollingPolicy.build())
+                .withOutputFileConfig(flie_config)
+                .build();
+        chuli.sinkTo(sink);
         chuli.print();
 
         try {
