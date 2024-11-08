@@ -2,7 +2,6 @@
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
     <data-source source="LOCAL" name="Hive Metastore" read-only="true" uuid="9312cfa9-3e99-4e0a-b9bf-e9153cdef687">
-      <driver-ref>4590ef11-6b7d-4607-b224-0a796acdfdce</driver-ref>
       <synchronize>true</synchronize>
       <remarks>来自 Big Data Tools 插件的 Hive 元存储包装器</remarks>
       <jdbc-driver>com.dbschema.ZeppelinSparkJdbcDriver</jdbc-driver>
