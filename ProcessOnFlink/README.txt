@@ -65,3 +65,40 @@ STORED AS ORC
 
 分区需要在插入语句中指定格式否则hive会查不到数据
 ALTER table random_data.xiaofei_kuanb  add partition(dt='2024-11-08') location '/opt/hive/warehouse/random_data.db/xiaofei_kuanb/2024-11-08';
+
+5.doris建表
+
+遇到问题,在虚拟机搭建的fe和be,但是fe连接不上be了,
+在mysql中删除了BACKEND然后重新add就好了。不清楚有啥问题
+--drop table random_data.xiaofei_kuanb2;
+CREATE TABLE random_data.xiaofei_kuanb2(
+  `name` varchar(200),
+  `address`  varchar(500),
+  `restaurant`  varchar(500),
+  `food` varchar(500),
+  `price` double,
+  `count` int,
+  `gmv` double,
+  `email` string,
+  `phone` string,
+  `job` string,
+  `company` string,
+  `tm` double,
+  `dt` DATE
+  )
+ENGINE=olap
+
+DUPLICATE KEY(name,address,restaurant,food)		--string不能做key
+PARTITION BY RANGE(dt)()		--分区字段也不能是string
+DISTRIBUTED BY HASH(name,food)	BUCKETS AUTO
+PROPERTIES
+(
+    "dynamic_partition.enable" = "true",
+    "dynamic_partition.time_unit" = "DAY",
+    "dynamic_partition.start" = "-7",
+    "dynamic_partition.end" = "3",
+    "dynamic_partition.prefix" = "p",
+    "dynamic_partition.buckets" = "32",
+	"replication_num" = "1",
+    "min_load_replica_num" = "1"
+);
