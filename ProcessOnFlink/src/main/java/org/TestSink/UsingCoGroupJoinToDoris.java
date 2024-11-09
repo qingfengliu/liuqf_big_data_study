@@ -403,10 +403,12 @@ public class UsingCoGroupJoinToDoris {
         executionBuilder.setLabelPrefix("label-doris") //streamload label prefix
                 .setDeletable(false)
                 .setStreamLoadProp(properties); //streamload params
+        //dt是分区字段
+
         String[] fields = {"name", "address", "restaurant", "food", "price", "count", "gmv", "email", "phone", "job", "company", "tm", "dt"};
         DataType[] types = {DataTypes.VARCHAR(200), DataTypes.VARCHAR(500), DataTypes.VARCHAR(500),
                 DataTypes.VARCHAR(500), DataTypes.DOUBLE(), DataTypes.INT(), DataTypes.DOUBLE(), DataTypes.STRING(),
-                DataTypes.STRING(), DataTypes.STRING(), DataTypes.STRING(), DataTypes.BIGINT(), DataTypes.VARCHAR(20)};
+                DataTypes.STRING(), DataTypes.STRING(), DataTypes.STRING(), DataTypes.BIGINT(), DataTypes.STRING()};
 
         builder.setDorisReadOptions(DorisReadOptions.builder().build())
                 .setDorisExecutionOptions(executionBuilder.build())
@@ -432,6 +434,7 @@ public class UsingCoGroupJoinToDoris {
                 genericRowData.setField(9, StringData.fromString(value.getJob()));
                 genericRowData.setField(10, StringData.fromString(value.getCompany()));
                 genericRowData.setField(11, value.getTm());
+                //dt是分区字段,用字符串插入即可。
                 genericRowData.setField(12, StringData.fromString(value.getDt()));
 
 

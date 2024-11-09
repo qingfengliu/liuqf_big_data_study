@@ -67,10 +67,10 @@ STORED AS ORC
 ALTER table random_data.xiaofei_kuanb  add partition(dt='2024-11-08') location '/opt/hive/warehouse/random_data.db/xiaofei_kuanb/2024-11-08';
 
 5.doris建表
-
+插入doris做了两版本实验一种有分区的,一种没有分区的。最终程序一有分区的为准，但是两个实验的建表语句都放在这吧
 遇到问题,在虚拟机搭建的fe和be,但是fe连接不上be了,
 在mysql中删除了BACKEND然后重新add就好了。不清楚有啥问题
---drop table random_data.xiaofei_kuanb2;
+drop table random_data.xiaofei_kuanb2;
 CREATE TABLE random_data.xiaofei_kuanb2(
   `name` varchar(200),
   `address`  varchar(500),
@@ -83,7 +83,7 @@ CREATE TABLE random_data.xiaofei_kuanb2(
   `phone` string,
   `job` string,
   `company` string,
-  `tm` double,
+  `tm` BIGINT,
   `dt` DATE
   )
 ENGINE=olap
@@ -99,6 +99,36 @@ PROPERTIES
     "dynamic_partition.end" = "3",
     "dynamic_partition.prefix" = "p",
     "dynamic_partition.buckets" = "32",
+	"replication_num" = "1",
+    "min_load_replica_num" = "1"
+);
+
+
+
+drop table random_data.xiaofei_kuanb2;
+CREATE TABLE random_data.xiaofei_kuanb2(
+  `name` varchar(200),
+  `address`  varchar(500),
+  `restaurant`  varchar(500),
+  `food` varchar(500),
+  `price` double,
+  `count` int,
+  `gmv` double,
+  `email` string,
+  `phone` string,
+  `job` string,
+  `company` string,
+  `tm` BIGINT,
+  `dt` varchar(20)
+  )
+ENGINE=olap
+
+DUPLICATE KEY(name,address,restaurant,food)		--string不能做key
+
+DISTRIBUTED BY HASH(name,food)	BUCKETS AUTO
+PROPERTIES
+(
+
 	"replication_num" = "1",
     "min_load_replica_num" = "1"
 );
