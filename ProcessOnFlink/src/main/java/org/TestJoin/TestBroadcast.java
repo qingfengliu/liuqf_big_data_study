@@ -26,7 +26,7 @@ import org.json.JSONObject;
 import org.apache.flink.connector.jdbc.JdbcInputFormat;
 import java.util.Iterator;
 
-public class Test3 {
+public class TestBroadcast {
     public static void main(String[] args) {
         // Create a Flink execution environment
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();

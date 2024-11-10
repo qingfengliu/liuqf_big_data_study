@@ -14,7 +14,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import org.json.JSONObject;
 
-public class Test2 {
+public class UsingRichFunction {
     public static void main(String[] args) {
         //试验批流join，批数据从mysql中读取，流数据从kafka中读取
         // Create a Flink execution environment
@@ -37,7 +37,7 @@ public class Test2 {
 
             }
         });
-        sale_data.map(new StaticJoinDemo()).print();
+        sale_data.map(new JoinDemoRichFunction()).print();
 
         try {
             env.execute();

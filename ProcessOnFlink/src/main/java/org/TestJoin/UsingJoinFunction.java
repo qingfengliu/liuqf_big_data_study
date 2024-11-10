@@ -18,7 +18,7 @@ import org.json.JSONObject;
 import org.apache.flink.api.java.functions.KeySelector;
 
 
-public class Test {
+public class UsingJoinFunction {
     public static void main(String[] args) {
         // Create a Flink execution environment
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
