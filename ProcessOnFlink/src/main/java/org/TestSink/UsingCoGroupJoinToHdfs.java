@@ -397,4 +397,5 @@ public class UsingCoGroupJoinToHdfs {
             e.printStackTrace();
         }
     }
+
 }
