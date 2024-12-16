@@ -397,6 +397,7 @@ public class UsingCoGroupJoinToHdfs {
     public static void main(String[] args) {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        //设置checkpoint,必须设置checkpoint
         env.getCheckpointConfig().setCheckpointInterval(1000);
         Tuple2<DataStream, DataStream> to_stream = setup(env);
         DataStream<Sale> sale_data = to_stream.f0;
@@ -430,6 +431,7 @@ public class UsingCoGroupJoinToHdfs {
         //sink到hdfs,写入文件格式为orc
         String schema = "struct<name:string,address:string,restaurant:string,food:string,price:double,count:int,gmv:double,email:string,phone:string,job:string,company:string,tm:bigint,dt:string>";
         OrcBulkWriterFactory<SalePerson> factory = new OrcBulkWriterFactory<>(new SalePersonVectorizer(schema));
+        //forBulkFormat按批
         FileSink<SalePerson> sink = FileSink.forBulkFormat(new Path("hdfs:/opt/hive/warehouse/random_data.db/xiaofei_kuanb")
                         , factory)
                 .withBucketAssigner(new DateTimeBucketAssigner<>("yyyy-MM-dd"))
