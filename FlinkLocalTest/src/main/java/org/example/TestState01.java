@@ -4,8 +4,9 @@ import DataStruct.StructData;
 
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.api.common.state.StateTtlConfig;
 import org.apache.flink.api.common.state.ValueState;
-import org.apache.flink.api.common.typeinfo.Types;
+import org.apache.flink.api.common.time.Time;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -14,7 +15,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction;
 import org.apache.flink.util.Collector;
 
-
+//简单的测试一下valueState
 public class TestState01 {
     //不能放到同一文件的其他类中，否则会报错
 
@@ -75,7 +76,16 @@ public class TestState01 {
 
                     @Override
                     public void open(Configuration parameters) {
-                        averageState = getRuntimeContext().getState(new ValueStateDescriptor<>("myState1", StructData.class));
+                         //定义状态的过期时间,这个好像是处理时间而不是事件时间。
+                        StateTtlConfig stateTtlConfig = StateTtlConfig
+                                .newBuilder(Time.seconds(10))  //过期时间10s
+                                .setUpdateType(StateTtlConfig.UpdateType.OnCreateAndWrite)  //状态 创建和更新  更新过期时间
+                                .setStateVisibility(StateTtlConfig.StateVisibility.NeverReturnExpired)  //不返回过期的状态值
+                                .build();
+
+                        ValueStateDescriptor<StructData> myState1Descriptor = new ValueStateDescriptor<>("myState1", StructData.class);
+                        myState1Descriptor.enableTimeToLive(stateTtlConfig);
+                        averageState = getRuntimeContext().getState(myState1Descriptor);
                     }
                  }).map(s->s).print();
 
