@@ -19,7 +19,7 @@ import java.util.Map;
 import static java.lang.Class.forName;
 
 //将维表数据写入到状态中，然后在每个task中进行join
-public class StaticJoinDemo extends RichMapFunction<Tuple2<String, String>, String> {
+public class JoinDemoRichFunction extends RichMapFunction<Tuple2<String, String>, String> {
     static String Url = "jdbc:mysql://192.168.212.133/random_data";
     static String name = "root";//数据库用户名
     static String psd = "111111";//数据库密码

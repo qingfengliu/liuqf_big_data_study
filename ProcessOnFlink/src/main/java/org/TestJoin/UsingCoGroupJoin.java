@@ -11,7 +11,9 @@ import org.apache.flink.configuration.Configuration;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.datastream.DataStreamSink;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction;
 import org.apache.flink.util.Collector;
@@ -21,6 +23,10 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 public class UsingCoGroupJoin {
+    //两个侧输出流
+    private static final OutputTag<String> source1SideOutput = new OutputTag<String>("left-output"){};
+    private static final OutputTag<String> source2SideOutput = new OutputTag<String>("right-output"){};
+
     public static Tuple2<DataStream, DataStream> setup(StreamExecutionEnvironment env){
         //sale data source
 
@@ -91,9 +97,6 @@ public class UsingCoGroupJoin {
         // onTimer中拿不到当前key，只能提前保存在状态中（KeyedProcessFunction的OnTimerContext有API可以取到，但是CoProcessFunction的OnTimerContext却没有）
         private ValueState<String> currentKeyState;
 
-        //两个侧输出流
-        private final OutputTag<String> source1SideOutput = new OutputTag<String>("left-output"){};
-        private final OutputTag<String> source2SideOutput = new OutputTag<String>("right-output"){};
 
 
 
@@ -214,12 +217,12 @@ public class UsingCoGroupJoin {
 //            System.out.println("process on time timestamp:"+ctx.timestamp());//这个是打印了超时时间
             if(null!=value1) {
                 // 侧输出
-                ctx.output(source1SideOutput, value1);
+                ctx.output(UsingCoGroupJoin.source1SideOutput, value1);
             }
 
             if(null!=value2) {
                 // 侧输出
-                ctx.output(source2SideOutput, value2);
+                ctx.output(UsingCoGroupJoin.source2SideOutput, value2);
             }
 
             clearAllState();
@@ -234,7 +237,7 @@ public class UsingCoGroupJoin {
         DataStream<Tuple2<String, String>> person_data = to_stream.f1;
 //        CoProcessFunction
         //改使用connect和coProcess组合.cogroupfunction不提供侧输出
-        sale_data.keyBy(new KeySelector<Tuple2<String, String>, String>() {
+        SingleOutputStreamOperator<String> chuli=sale_data.keyBy(new KeySelector<Tuple2<String, String>, String>() {
             @Override
             public String getKey(Tuple2<String, String> value) throws Exception {
                 return value.f0;
@@ -251,8 +254,16 @@ public class UsingCoGroupJoin {
                         return value;
                     }
                 }
-        ).print();
+        );
 
+        //source1SideOutput转换为dataframe
+        chuli.getSideOutput(source1SideOutput).map(new MapFunction<String, String>() {
+            @Override
+            public String map(String value) {
+                return value;
+            }
+        }).print("source1SideOutput");
+        chuli.print();
         try {
             env.execute("Flink Streaming Java API Skeleton");
         } catch (Exception e) {

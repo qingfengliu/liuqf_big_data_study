@@ -124,6 +124,9 @@ public class UsingCoGroupJoinToMysqlConnector {
         }
     }
 
+    //两个侧输出流
+    private final static OutputTag<String> source1SideOutput = new OutputTag<String>("left-output"){};
+    private final static OutputTag<String> source2SideOutput = new OutputTag<String>("right-output"){};
     //初始化两个数据源，将数据装载到两个结构体中。并设置时间戳和水印
     public static Tuple2<DataStream, DataStream> setup(StreamExecutionEnvironment env){
         //sale data source
@@ -208,9 +211,7 @@ public class UsingCoGroupJoinToMysqlConnector {
         // onTimer中拿不到当前key，只能提前保存在状态中（KeyedProcessFunction的OnTimerContext有API可以取到，但是CoProcessFunction的OnTimerContext却没有）
         private ValueState<String> currentKeyState;
 
-        //两个侧输出流
-        private final OutputTag<String> source1SideOutput = new OutputTag<String>("left-output"){};
-        private final OutputTag<String> source2SideOutput = new OutputTag<String>("right-output"){};
+
 
 
 
@@ -402,6 +403,7 @@ public class UsingCoGroupJoinToMysqlConnector {
                         .build()
         ));
         chuli.print();
+        chuli.getSideOutput(source1SideOutput).print();//分流了
 
         try {
             env.execute("Flink Streaming Java API Skeleton");
