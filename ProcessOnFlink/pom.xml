@@ -98,6 +98,14 @@
             <version>24.0.1</version>
         </dependency>
 
+        <dependency>
+
+            <groupId>org.apache.flink</groupId>
+                <artifactId>flink-statebackend-changelog</artifactId>
+                <version>1.20.0</version>
+            <scope>runtime</scope>
+        </dependency>
+
     </dependencies>
 
 
