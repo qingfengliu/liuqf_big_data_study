@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<script>
+  var arr =new Array()
+  // 向数据中添加数据
+  arr[0]="zhangsan"
+  arr[1]=10
+  arr[9]=true
+  console.log(arr)
+  console.log(arr.length)
+
+  var fruits =["apple",'orange','banana']
+  var fruits2 =["荔枝",'桃子','榴莲']
+  var fruitsAll =fruits.concat(fruits2)
+  console.log(fruits)
+  console.log(fruits2)
+  console.log(fruitsAll)
+  // 移除并返回最后一个元素
+  var res =fruitsAll.pop()
+  console.log(res)
+  console.log(fruitsAll)
+  // 从尾端增加元素并返回长度
+  var len=fruitsAll.push("葡萄")
+  console.log(len)
+  console.log(fruitsAll)
+</script>
+<body>
+
+</body>
+</html>

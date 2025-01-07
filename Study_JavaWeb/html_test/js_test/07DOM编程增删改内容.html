@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script>
+  function addcs(){
+    //创建一个新的元素
+    var csli =document.createElement("li")//<li>/li>
+    // 设置子元素的属性和文本<lí id="qs">长沙</li>
+    csli.id="cs"
+    csli.innerText="长沙"
+    //将子元素放入父元素中
+    var cityul =document.getElementById("city")
+    // 在父元素中追加子元素
+    cityul.appendChild(csli)
+  }
+
+  function addCsBeforeCz(){
+    //创建一个新的元素
+    var csli =document.createElement("li")//<li>/li>
+    // 设置子元素的属性和文本<lí id="qs">长沙</li>
+    csli.id="cs"
+    csli.innerText="长沙"
+    //将子元素放入父元素中
+    var cityul =document.getElementById("city")
+    // 在父元素中追加子元素
+    cityul.insertBefore(csli,document.getElementById("sz"))
+  }
+
+    function replaceSz(){
+        //创建一个新的元素
+        var csli =document.createElement("li")//<li>/li>
+        // 设置子元素的属性和文本<lí id="qs">长沙</li>
+        csli.id="cs"
+        csli.innerText="长沙"
+        //将子元素放入父元素中
+        var cityul =document.getElementById("city")
+        // 在父元素中追加子元素
+        cityul.replaceChild(csli,document.getElementById("sz"))
+    }
+
+  function clearcity() {
+    var cityul = document.getElementById("city")
+    var fc =cityul.firstChild
+    // while(fc != null ){
+    //   fc.remove()
+    //   fc =cityul.firstChild
+    // }
+    cityul.innerHTML = ""
+  }
+  </script>
+</head>
+<body>
+<ul id="city">
+  <li id="bj">北京</li>
+  <li id="sh">上海</li>
+  <li id="sz">深圳</li>
+  <li id="gz">广州</li>
+</ul>
+<hr>
+<button onclick="addcs()">增加长沙</button>
+<!--目标2 在城市列表的深圳前添加一个子标签 <li id="cs">长沙</1i> -->
+<button onclick="addCsBeforeCz()">增加长沙</button>
+<!--目标3将城市列表的深圳替换为<li id="cs">长沙</li> -->
+<button onclick="replaceSz()">替换深圳</button>
+<!--目标4 删除城市列表的深圳 -->
+<button onclick="document.getElementById('city').removeChild(document.getElementById('sz'))">删除深圳</button>
+<!-- 目标5 清空城市列表 -->
+<button onclick="clearcity()">清空城市</button>
+</body>
+</html>

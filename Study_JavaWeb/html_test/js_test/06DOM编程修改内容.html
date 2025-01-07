@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<script>
+  function changeAttrbute(){
+    var input = document.getElementsByTagName("input")[0];
+    input.setAttribute("value", "world");
+  }
+
+  function changestyle(){
+    var input = document.getElementsByTagName("input")[0];
+    //语法 元素.style.样式名="" 原始样式名中的""符号 要转换驼峰式 background-color > backgroundColor
+    input.style.color = "red";
+    input.style.backgroundColor = "black";
+    input.style.borderRadius = "5px";
+  }
+
+  function changeText(){
+    var div01 = document.getElementById("div01");
+    // input.innerText="嗨"; //innerText 会获取元素中的文本内容
+    div01.innerHTML="<h1>嗨</h1>"; //innerHTML 会获取元素中的所有内容
+  }
+</script>
+<body>
+  <input type= "text" value= "hello">
+  <div id="div01">你好</div>
+
+<hr>
+<button onclick="changeAttrbute()">变</button>
+ <button onclick="changestyle()">操作样式</button>
+  <button onclick="changeText()">操作文本</button>
+</body>
+</html>

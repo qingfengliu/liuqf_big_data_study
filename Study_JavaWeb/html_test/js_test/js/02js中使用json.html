@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script>
+    //这里都是直接变成object了,不用JSON.parse了
+    var personStr={"name":"张三","age":10,"dog":{"dname":"小花"},"lovesingers":["张小明","王小东","李小黑"],"friends":[{"fname":"赵四儿"},{"fname":"玉田"},{"fname":"王小蒙"}] }
+    console.log(personStr)
+    console.log(typeof personStr)
+    console.log(personStr.name)
+    // var person=JSON.parse(personStr)
+    // console.log(person)
+    var personStr2=JSON.stringify(personStr)
+    console.log(personStr2)
+  </script>
+</head>
+<body>
+
+</body>
+</html>

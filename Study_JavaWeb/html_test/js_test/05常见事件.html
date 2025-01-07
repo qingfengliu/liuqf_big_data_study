@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script>
+    function testchange2(zhi){
+      console.log("选择了"+zhi);
+    }
+    function testchange(zhi){
+      console.log("改变了"+zhi);
+    }
+    function testBlur(){
+      console.log("失去焦点");
+    }
+    function testFocus(){
+      console.log("获得焦点");
+    }
+    function testSubmit(){
+      /*
+      1 事件的绑定方式
+        1 通过元素的属性绑定	On***
+        2 通过DOM编程动态绑定
+        注意事项:
+          1 一个事件可以同时绑定多个函数
+          2 一个元素可以同时绑定多个事件
+
+       页面加载事件
+       事件触发
+        DOM编程触发
+      * 弹窗的三种方式
+      *   alert()信息提示框
+      *   prompt()信息输入框
+      *   confirm()信息确认框
+      * */
+      var flag=confirm("确定要提交表单吗?");
+      if  (!flag) {
+        // event.preventDefault();
+        return false;
+      }
+      return true;
+    }
+    function testRest(){
+      console.log("重置表单");
+    }
+  </script>
+</head>
+<body>
+<form action="空文件.html" method="get" onsubmit="return testSubmit()" onreset="testRest()">
+用户昵称:<input type="text" name="realName" onfocus="testFocus()" onblur="testBlur()"
+  onchange="testchange(this.value)"> <br>
+  登录账号:<input type="text" name="logoinName"><br>
+  选择籍贯:<select onchange="testchange2(this.value)">
+    <option>北京</option>
+    <option>上海</option>
+    <option>广州</option>
+  </select>
+  <input type="submit" value="提交">
+  <input type="reset" value="清空">
+</form>
+<br>
+</body>
+</html>

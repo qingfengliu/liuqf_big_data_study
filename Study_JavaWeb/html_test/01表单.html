@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<!--
+form
+  action 定义数据的提交地址
+    1 url
+    2 相对路径
+    3 绝对路径
+  表单项标签
+    一定要有name属性，该属性的值就是提交的参数名
+    还需要定义value属性，该属性的值就是提交的参数值
+
+  method 定义数据的提交方式
+    GET
+      参数会以键值对形式放在ur1后提交
+      url?key=value&key=value&key=value
+    POST
+      1 参数默认不放到ur1后
+      2 数据不会直接暴露在地址栏上,相对安全
+      3 数据是单独打包通过请求体发送 提交的数据量比较大
+     PUT
+     DELETE
+     ...
+
+
+
+
+  input
+    type 输入信息的表单项类型
+      text 单行普通文本框密码框
+      password 提交按钮
+      submit 提交按钮
+      reset 重置按钮
+      radio 单选框
+             多个单选框使用相同的name属性则会有互斥效果
+      checkbox 复选框
+      hidden 隐藏域
+      file 文件上传
+  textarea
+    多行文本框
+  select
+    下拉列表
+    option
+      下拉列表的选项
+
+-->
+
+<form action="02welcome.html" method="get">
+  用户名:<input type="text" name="username" placeholder="请输入用户名"><br>
+  密码：<input type="password" name="password" placeholder="请输入密码"><br>
+  性别:
+  <input type="radio" name="gender" value="1" checked="true">男
+  <input type="radio" name="gender" value="0">女
+  <br>
+  爱好:
+  <input type="checkbox" name="hobby" value="1"> 篮球
+  <input type="checkbox" name="hobby" value="2">足球
+  <input type="checkbox" name="hobby" value="3">羽毛球
+  <input type="checkbox" name="hobby" value="4">乒乓球
+  <br>
+
+  个人简介:
+  <textarea name="intro" style="width: 300px; height: 100px;" ></textarea>
+  <br>
+  籍贯:
+  <select name="pro">
+    <option>京</option>
+    <option>津</option>
+    <option>冀</option>
+    <option value="" selected>-请选择-</option>
+  </select>
+
+  <br>
+
+
+
+  <input type="submit" value="登录">
+  <input type="reset" value="重置">
+
+</form>
+</body>
+</html>
