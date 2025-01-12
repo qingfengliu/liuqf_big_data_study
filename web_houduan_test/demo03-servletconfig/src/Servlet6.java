@@ -13,7 +13,7 @@ public class Servlet6 extends HttpServlet {
         resp.setHeader("aaa","valueg");
         resp.setHeader("Content-Type","text/html");
         resp.setContentLength(info.getBytes().length);
-        
+
         //设置响应体内容API
         PrintWriter writer =resp.getWriter();
         writer.write(info);
