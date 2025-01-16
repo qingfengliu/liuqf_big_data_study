@@ -2,6 +2,8 @@ package com.atguigu.schedule.dao;
 
 import com.atguigu.schedule.pojo.SysSchedule;
 
+import java.util.List;
+
 /*
 * 作者:
 * 时间:
@@ -14,4 +16,9 @@ public interface SysScheduleDao {
     @return 返回影响数据库记录的行数，行数为0说明增加失败,行数大于0说明增加成功
 * */
     int addSchedule(SysSchedule schedule);
+
+    /*
+    * 用于根据用户id查询用户的所有日程
+     */
+    List<SysSchedule> findAll(Integer uid);
 }
