@@ -13,7 +13,7 @@ public class BaseController extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //判断此次请求是 增、删、改、查
-        String requestURI = req.getRequestURI();//    /schedul/adde
+        String requestURI = req.getRequestURI();//    /user/regist
         String[] split = requestURI.split("/");
         String methodName = split[split.length - 1];
 
