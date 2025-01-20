@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
-@WebServlet("/schedule/*")
+@WebServlet(value = "/schedule/*",name="scheduleServlet")
 /*
 * 增加日程的请求   /schedule/add
 * 查询日程的请求   /schedule/find

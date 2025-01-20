@@ -1,0 +1,51 @@
+梳理下mvc的本项目目录结构，
+从用户请求的角度讲，用户请求的是视图层(view)
+    view层在web目录下。具体结构其实无所谓，属于前端的范畴。
+
+视图层(view)调用控制层(controller)
+    控制层(controller)在controller目录下。
+    controller会相应用户的请求，所以这里需要写前端能做的事情。
+    本项目中控制层(controller)层有三个类，
+        BaseController:基类，使用反射调用子类的方法
+        SysScheduleController:目前未定义这部分业务方法。
+        SysUserController:目前功能有用户登录和用户注册。
+
+控制层(controller)调用业务层(service)
+    业务层(service)在service目录下。
+    业务层(service)层有两个接口，两个类。
+        SysScheduleService:接口。目前没有定义这部分业务。
+        SysUserService:接口，定义了用户这个业务，有注册和登录两个业务。
+
+        SysScheduleServiceImpl:实现类。目前没有具体的实现
+
+        SysUserServiceImpl:实现类，实现了业务层的方法。
+            regist:注册，从controller接受数据，将密码加密。调用dao层的方法，将数据存入数据库。
+            findByUserName:根据用户名查找用户，调用dao层的方法。
+
+            感觉这里设计的其实不太好。findByUserName其实对应的行为应该是addUser。而regist对应的行为为login。
+
+
+业务层(service)调用数据层
+    数据层就有多层了，顶层为dao层;操作数据库为pojo层。
+    dao层在dao目录下，有两个接口，三个实现类。
+        基类BaseDao，定义了基本的增删改查方法。（只实现了增删）
+        SysScheduleDao:接口，由于上次的设计没有实现，所以这里不研究。
+        SysUserDao:接口，addSysUser方法:添加用户.
+                        findSysUserByName方法:根据用户名查找用户。
+                   对应的就是注册和登录的功能。
+
+        SysScheduleDaoImpl:实现类，不研究。
+        SysUserDaoImpl:实现类，实现了dao层的方法。
+            addSysUser:添加用户，将数据存入数据库。
+            findSysUserByName:根据用户名查找用户，从数据库中查找数据。并封装成SysUser对象返回。
+
+    pojo层在pojo目录下，有两个类。
+        SysSchedule:定义了一个结构体，对应数据库中的schedule表。
+        SysUser:定义了一个结构体，对应数据库中的user表。
+
+
+filter:过滤器对应filter目录
+    过滤器在web.xml中配置，对请求进行过滤。
+    目前只有一个过滤器，LoginFilter，对用户的登录状态进行过滤。
+
+

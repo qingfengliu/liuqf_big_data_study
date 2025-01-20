@@ -47,6 +47,8 @@ public class SysUserController extends BaseController {
         if(rows>0) {
             //注册成功
             //跳转到登录页面
+            //登录成功先将用户信息存储到session中
+            req.getSession().setAttribute("loginUser",sysUser);
             resp.sendRedirect("/registSuccess.html");
         }else {
             //注册失败
