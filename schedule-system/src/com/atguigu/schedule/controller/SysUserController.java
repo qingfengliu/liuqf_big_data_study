@@ -84,4 +84,26 @@ public class SysUserController extends BaseController {
             resp.sendRedirect("/showSchedule.html");
         }
     }
+
+    /*
+    *按收要注册的用户名，校验用户名是否被占用的业务接口
+    @param req
+    * @param resp
+    * @throws IOException
+    *
+    * 存在问题
+
+
+
+     * */
+    protected void checkUsername(HttpServletRequest req,HttpServletResponse resp) throws IOException {
+        String username = req.getParameter("username");
+        SysUser sysUser = userService.findByUserName(username);
+        if(null == sysUser) {
+            //相应一个josn,下节课这里要转换成json字符串
+            resp.getWriter().write("true");
+        }else {
+            resp.getWriter().write("false");
+        }
+    }
 }
