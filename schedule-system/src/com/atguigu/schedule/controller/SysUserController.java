@@ -1,17 +1,18 @@
 package com.atguigu.schedule.controller;
 
+import com.atguigu.schedule.common.Result;
+import com.atguigu.schedule.common.ResultCodeEnum;
 import com.atguigu.schedule.pojo.SysUser;
 import com.atguigu.schedule.service.SysUserService;
 import com.atguigu.schedule.service.impl.SysUserServiceImpl;
 import com.atguigu.schedule.util.MD5Util;
-import jakarta.servlet.ServletException;
+import com.atguigu.schedule.util.WebUtil;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebServlet("/user/*")
 /*
@@ -99,11 +100,13 @@ public class SysUserController extends BaseController {
     protected void checkUsername(HttpServletRequest req,HttpServletResponse resp) throws IOException {
         String username = req.getParameter("username");
         SysUser sysUser = userService.findByUserName(username);
-        if(null == sysUser) {
-            //相应一个josn,下节课这里要转换成json字符串
-            resp.getWriter().write("true");
-        }else {
-            resp.getWriter().write("false");
+        Result result =Result.ok(null);
+        if(null != sysUser){
+            result=Result.build(null, ResultCodeEnum.USERNAME_USED);
         }
+
+        //将result对象转换为json字符串
+        WebUtil.writeJson(resp,result);
+
     }
 }

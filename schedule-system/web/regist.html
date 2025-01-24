@@ -63,11 +63,11 @@
 
             request.onreadystatechange = function(){
                 if(request.readyState == 4 && request.status == 200){
-                    var response = request.responseText
-                    if(response == "true"){
-                        usernameMsg.innerText="OK"
-                    }else{
-                        usernameMsg.innerText="用户名已存在"
+                    var result =JSON.parse(request.responseText)
+                    if(result.code != 200){
+                        usernameMsg.innerText="不可用"
+                    }else {
+                        usernameMsg.innerText = "OK"
                     }
                 }
             }
