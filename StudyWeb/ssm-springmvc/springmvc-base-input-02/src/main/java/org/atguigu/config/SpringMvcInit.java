@@ -24,4 +24,5 @@ public class SpringMvcInit extends AbstractAnnotationConfigDispatcherServletInit
     protected String[] getServletMappings() {
         return new String[]{"/"};
     }
+
 }
