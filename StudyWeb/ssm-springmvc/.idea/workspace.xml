@@ -9,7 +9,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="335fefab-c048-42f0-a369-4e5823bf38dd" name="Changes" comment="" />
+    <list default="true" id="335fefab-c048-42f0-a369-4e5823bf38dd" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../ssm-integration-part/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ssm-integration-part/ssm-integration-01/src/main/java/com/atguigu/config/DataSourceJavaConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ssm-integration-part/ssm-integration-01/src/main/java/com/atguigu/config/MapperJavaConfigNew.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ssm-integration-part/ssm-integration-01/src/main/java/com/atguigu/config/SpringloCInit.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ssm-integration-part/ssm-integration-01/src/main/java/com/atguigu/controller/EmployeeController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ssm-integration-part/ssm-integration-01/src/main/java/com/atguigu/mapper/EmployeeMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ssm-integration-part/ssm-integration-01/src/main/java/com/atguigu/service/EmployeeService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ssm-integration-part/ssm-integration-01/src/main/java/com/atguigu/service/impl/EmployeeserviceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ssm-integration-part/ssm-integration-01/src/main/resources/com/atguigu/mapper/EmployeeMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ssm-integration-part/ssm-integration-01/src/main/resources/jdbc.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ssm-integration-part/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ssm-integration-part/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ssm-integration-part/ssm-integration-01/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ssm-integration-part/ssm-integration-01/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ssm-integration-part/ssm-integration-01/src/main/java/com/atguigu/config/ServiceJavaConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ssm-integration-part/ssm-integration-01/src/main/java/com/atguigu/config/ServiceJavaConfig.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -25,6 +39,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "qingfengliu"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "git@github.com:qingfengliu/liuqf_big_data_study.git",
+    "accountId": "92502231-29f2-4401-bfe1-0578ec7fc67c"
+  }
+}]]></component>
   <component name="LogFilters">
     <option name="FILTER_ERRORS" value="false" />
     <option name="FILTER_WARNINGS" value="false" />
@@ -178,6 +204,7 @@
       <workItem from="1740454378116" duration="14344000" />
       <workItem from="1740560363407" duration="554000" />
       <workItem from="1740631147181" duration="514000" />
+      <workItem from="1740668779176" duration="13000" />
     </task>
     <servers />
   </component>

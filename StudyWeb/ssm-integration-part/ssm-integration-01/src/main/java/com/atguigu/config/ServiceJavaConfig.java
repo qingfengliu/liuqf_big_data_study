@@ -8,6 +8,7 @@ package com.atguigu.config;
 * */
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -19,11 +20,12 @@ import javax.sql.DataSource;
 @Configuration
 @EnableAspectJAutoProxy // 开启aop注解的支持
 @EnableTransactionManagement    // 开启事务注解支持
+@ComponentScan("com.atguigu.service")
 public class ServiceJavaConfig {
     @Bean
-    public TransactionManager transactionManager(DataSource datasgurce){
+    public TransactionManager transactionManager(DataSource dataSource){
         DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
         dataSourceTransactionManager.setDataSource(dataSource);
-        return dataSourceTransactionManager:
+        return dataSourceTransactionManager;
     }
 }

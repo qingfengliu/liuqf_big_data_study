@@ -10,6 +10,7 @@ package com.atguigu.config;
 *
 * */
 
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @EnableWebMvc   // 开启SpringMVC,配置handlerMapping和handlerAdapter
 @Configuration
-//@ComponentScan("com.atguigu.controller")
+@ComponentScan("com.atguigu.controller")
 public class WebMvcJavaConfig implements WebMvcConfigurer {
 
     // 配置静态资源处理
