@@ -7,4 +7,16 @@
     <select id="querylist" resultType="schedule">
         select * from schedule
     </select>
+
+    <delete id="deleteById" parameterType="int">
+        delete from schedule where id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="schedule">
+        insert into schedule (title,completed) values (#{title}, #{completed});
+    </insert>
+
+    <update id="update" parameterType="schedule">
+        update schedule set title = #{title}, completed = #{completed} where id = #{id}
+    </update>
 </mapper>

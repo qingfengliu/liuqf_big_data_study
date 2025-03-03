@@ -2,43 +2,49 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="springmvc-base-input-02:war exploded" />
+      <artifact name="ssm-integration-todolist-02:war exploded" />
     </artifacts-to-build>
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="335fefab-c048-42f0-a369-4e5823bf38dd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="3bd72779-4a09-45cd-b9f2-2dfebbcf0be1" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssm-integration-01/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssm-integration-01/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssm-integration-todolist-02/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssm-integration-todolist-02/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssm-integration-todolist-02/src/main/java/com/atguigu/controller/ScheduleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssm-integration-todolist-02/src/main/java/com/atguigu/controller/ScheduleController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssm-integration-todolist-02/src/main/java/com/atguigu/mapper/ScheduleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssm-integration-todolist-02/src/main/java/com/atguigu/mapper/ScheduleMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssm-integration-todolist-02/src/main/java/com/atguigu/pojo/Schedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssm-integration-todolist-02/src/main/java/com/atguigu/pojo/Schedule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssm-integration-todolist-02/src/main/java/com/atguigu/service/ScheduleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssm-integration-todolist-02/src/main/java/com/atguigu/service/ScheduleService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssm-integration-todolist-02/src/main/java/com/atguigu/service/impl/ScheduleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssm-integration-todolist-02/src/main/java/com/atguigu/service/impl/ScheduleServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssm-integration-todolist-02/src/main/resources/com/atguigu/mapper/ScheduleMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssm-integration-todolist-02/src/main/resources/com/atguigu/mapper/ScheduleMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssm-integration-todolist-02/src/main/webapp/WEB-INF/web.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ssm-springmvc/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ssm-springmvc/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Class" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;qingfengliu&quot;
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "qingfengliu"
   }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;git@github.com:qingfengliu/liuqf_big_data_study.git&quot;,
-    &quot;accountId&quot;: &quot;92502231-29f2-4401-bfe1-0578ec7fc67c&quot;
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "git@github.com:qingfengliu/liuqf_big_data_study.git",
+    "accountId": "92502231-29f2-4401-bfe1-0578ec7fc67c"
   }
-}</component>
+}]]></component>
   <component name="LogFilters">
     <option name="FILTER_ERRORS" value="false" />
     <option name="FILTER_WARNINGS" value="false" />
@@ -46,26 +52,21 @@
     <option name="FILTER_DEBUG" value="true" />
     <option name="CUSTOM_FILTER" />
   </component>
-  <component name="MavenImportPreferences">
-    <option name="generalSettings">
-      <MavenGeneralSettings>
-        <option name="localRepository" value="D:\mavenrepository" />
-      </MavenGeneralSettings>
-    </option>
-  </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 6
-}</component>
-  <component name="ProjectId" id="2tW0HK9DAXr8nB0JGoisZesyZCh" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 1
+}]]></component>
+  <component name="ProjectId" id="2to7auGtqGHwuIssC9Sl0wZUTed" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Maven.ssm-integration-part [clean].executor": "Run",
+    "Maven.ssm-integration-part [package].executor": "Run",
+    "Maven.ssm-integration-todolist-02 [clean].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Tomcat Server.Tomcat 10.1.34.executor": "Run",
-    "Tomcat Server.Unnamed.executor": "Run",
+    "Tomcat 服务器.Tomcat 10.1.34.executor": "Run",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/program/liuqf_big_data_study/StudyWeb/ssm-integration-part",
@@ -74,30 +75,25 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "模块",
+    "project.structure.last.edited": "工件",
     "project.structure.proportion": "0.24707031",
-    "project.structure.side.proportion": "0.55714285",
-    "settings.editor.selected.configurable": "configurable.group.appearance",
+    "project.structure.side.proportion": "0.3693108",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RecentsManager">
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="org.atguigu.pojo" />
-    </key>
-  </component>
   <component name="RunManager">
     <configuration name="Tomcat 10.1.34" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 10.1.34" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
       <option name="UPDATING_POLICY" value="restart-server" />
       <deployment>
-        <artifact name="springmvc-base-input-02:war exploded">
+        <artifact name="ssm-integration-todolist-02:war exploded">
           <settings>
             <option name="CONTEXT_PATH" value="/" />
           </settings>
         </artifact>
       </deployment>
       <server-settings>
-        <option name="BASE_DIRECTORY_NAME" value="e3f3cc54-6d57-4488-9612-a621271c8d16" />
+        <option name="BASE_DIRECTORY_NAME" value="ac253e54-5091-48a3-8b25-7de7e5c829f8" />
       </server-settings>
       <predefined_log_file enabled="true" id="Tomcat" />
       <predefined_log_file enabled="true" id="Tomcat Catalina" />
@@ -105,7 +101,7 @@
       <predefined_log_file id="Tomcat Host Manager" />
       <predefined_log_file id="Tomcat Localhost Access" />
       <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="63368" />
+        <option name="DEBUG_PORT" value="54366" />
       </RunnerSettings>
       <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
         <option name="USE_ENV_VARIABLES" value="true" />
@@ -170,7 +166,7 @@
       <method v="2">
         <option name="Make" enabled="true" />
         <option name="BuildArtifacts" enabled="true">
-          <artifact name="springmvc-base-input-02:war exploded" />
+          <artifact name="ssm-integration-todolist-02:war exploded" />
         </option>
       </method>
     </configuration>
@@ -183,28 +179,19 @@
       </set>
     </attachedChunks>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="335fefab-c048-42f0-a369-4e5823bf38dd" name="Changes" comment="" />
-      <created>1740452433867</created>
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="3bd72779-4a09-45cd-b9f2-2dfebbcf0be1" name="更改" comment="" />
+      <created>1741006639540</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1740452433867</updated>
-      <workItem from="1740452434971" duration="1507000" />
-      <workItem from="1740454378116" duration="14344000" />
-      <workItem from="1740560363407" duration="554000" />
-      <workItem from="1740631147181" duration="514000" />
-      <workItem from="1740668779176" duration="13000" />
-      <workItem from="1741005471105" duration="451000" />
+      <updated>1741006639540</updated>
+      <workItem from="1741006640579" duration="5360000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="XSLT-Support.FileAssociations.UIState">
-    <expand />
-    <select />
   </component>
 </project>

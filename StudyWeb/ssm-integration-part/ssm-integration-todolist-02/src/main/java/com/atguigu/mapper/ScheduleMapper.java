@@ -9,4 +9,10 @@ public interface ScheduleMapper {
     //mybatis会自动实现这个接口
     //需要在xml文件中配置
     List<Schedule> querylist();
+
+    int deleteById(int id);
+
+    int insert(Schedule schedule);
+
+    int update(Schedule schedule);
 }

@@ -30,4 +30,36 @@ public class ScheduleServiceImpl implements ScheduleService {
         R ok= R.ok(pagebean);
         return ok;
     }
+
+    @Override
+    public R remove(int id) {
+        int i = scheduleMapper.deleteById(id);
+        if(i>0){
+            return R.ok(null);
+        }
+        return R.fail(null);
+    }
+
+    @Override
+    public R save(Schedule schedule) {
+        int i = scheduleMapper.insert(schedule);
+        if(i>0){
+            return R.ok(null);
+        }
+        return R.fail(null);
+    }
+
+    @Override
+    public R update(Schedule schedule) {
+        // 判断ID不为空
+        if(schedule.getId()==null){
+            return R.fail("ID不能为空");
+        }
+        int i = scheduleMapper.update(schedule);
+        if(i>0){
+            return R.ok(null);
+        }
+        return R.fail(null);
+    }
+
 }
