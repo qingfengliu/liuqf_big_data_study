@@ -17,7 +17,7 @@ public class SpringloCInit extends AbstractAnnotationConfigDispatcherServletInit
         return new Class[]{WebMvcJavaConfig.class};
     }
 
-    // DispatcherServlet拦截请求地址
+    //DispatcherServlet拦截请求的映射
     @Override
     protected String[] getServletMappings() {
         return new String[]{"/"};

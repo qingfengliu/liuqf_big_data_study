@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>ssm-integration-01</module>
+        <module>ssm-integration-todolist-02</module>
     </modules>
 
 
