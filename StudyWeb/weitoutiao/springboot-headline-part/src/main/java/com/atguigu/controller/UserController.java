@@ -22,9 +22,22 @@ public class UserController {
     }
 
 
-    @GetMapping("/getuserinfo")
+    @GetMapping("/getUserInfo")
     public Result getUserInfo(@RequestHeader String token){
         Result result=userService.getUserInfo(token);
+        return result;
+    }
+
+    @PostMapping("/checkUserName")
+    public Result checkUserName(String username){
+        System.out.println("username = " + username);
+        Result result=userService.checkUserName(username);
+        return result;
+    }
+
+    @PostMapping("/regist")
+    public Result register(@RequestBody User user){
+        Result result=userService.register(user);
         return result;
     }
 }

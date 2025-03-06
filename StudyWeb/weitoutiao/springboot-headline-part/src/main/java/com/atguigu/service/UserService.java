@@ -14,4 +14,8 @@ public interface UserService extends IService<User> {
     Result login(User user);
 
     Result getUserInfo(String token);
+
+    Result checkUserName(String username);
+
+    Result register(User user);
 }

@@ -90,6 +90,38 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         return Result.ok(data);
     }
+
+    /**/
+    public Result checkUserName(String username) {
+        LambdaQueryWrapper<User>lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getUsername,username);
+        User user =userMapper.selectOne(lambdaQueryWrapper);
+        if(user == null){
+            //用户名不存在，可以使用
+            return Result.ok(null);
+        }
+
+        return Result.build(null, ResultCodeEnum.USERNAME_USED);
+    }
+
+    /*
+    * TODO :
+    *   1.校验用户名是否存在
+    *   2.对密码进行加密
+    *   3.插入数据库
+    *   4.返回成功
+    * */
+    public Result register(User user){
+        LambdaQueryWrapper<User> querylrapper= new LambdaQueryWrapper<>();
+        querylrapper.eq(User::getUsername,user.getUsername());
+        Long count=userMapper.selectCount(querylrapper);
+        if (count>0){
+            return Result.build(null,ResultCodeEnum.USERNAME_USED);
+        }
+        user.setUserPwd(MD5Util.encrypt(user.getUserPwd()));
+        userMapper.insert(user);
+        return Result.ok(null);
+    }
 }
 
 

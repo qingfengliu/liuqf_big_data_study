@@ -1,0 +1,8 @@
+            '/app-dev': {
+                target: 'http://localhost:8080',
+                changeOrigin: true,
+                rewrite: (path) => {
+                    console.log(path.replace(/^\/app-dev/, ''))
+                    return path.replace(/^\/app-dev/, '');
+                }
+            }
