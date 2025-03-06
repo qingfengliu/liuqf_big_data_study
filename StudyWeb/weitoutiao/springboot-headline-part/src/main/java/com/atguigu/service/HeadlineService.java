@@ -1,6 +1,8 @@
 package com.atguigu.service;
 
 import com.atguigu.pojo.Headline;
+import com.atguigu.pojo.vo.PortalVo;
+import com.atguigu.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -10,4 +12,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface HeadlineService extends IService<Headline> {
 
+    Result findNewsPage(PortalVo portalVd);
+
+
+    Result showHeadlineDetail(Integer hid);
 }

@@ -1,6 +1,7 @@
 package com.atguigu.service;
 
 import com.atguigu.pojo.Type;
+import com.atguigu.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -10,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface TypeService extends IService<Type> {
 
+    Result findAllTypes();
 }
