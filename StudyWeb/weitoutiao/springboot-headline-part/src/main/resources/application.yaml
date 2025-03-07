@@ -26,5 +26,5 @@ mybatis-plus:
 #jwt配置
 jwt:
   token:
-    tokenExpiration: 300 #token过期时间
+    tokenExpiration: 3600 #token过期时间,单位竟然是秒
     tokenSignKey: headline123456liuqingfengwansini  #当前程序签名秘钥 自定义

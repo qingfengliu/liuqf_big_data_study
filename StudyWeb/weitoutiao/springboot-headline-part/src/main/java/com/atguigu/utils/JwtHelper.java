@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
@@ -47,7 +48,7 @@ public class JwtHelper {
         if (StringUtils.isEmpty(token)) {
             return null;
         }
-
+        System.out.println(token);
         Claims claims = Jwts.parser()
                 .verifyWith(key)
                 .build()
@@ -62,18 +63,19 @@ public class JwtHelper {
     public  boolean isExpiration(String token){
         //验证token是否过期
         try {
-            boolean isExpire = Jwts.parser()
+            Date tokendate = Jwts.parser()
                     .verifyWith(key)
                     .build()
                     .parseClaimsJws(token)
                     .getBody()
-                    .getExpiration()
-                    .before(new Date());
+                    .getExpiration();
+
+            boolean isExpire = tokendate.before(new Date());
+
             return isExpire;
-        } catch (ExpiredJwtException e) {
-            return false;
         } catch (Exception e) {
-            return false;
+            System.out.println(e);
+            return true;
         }
     }
 }

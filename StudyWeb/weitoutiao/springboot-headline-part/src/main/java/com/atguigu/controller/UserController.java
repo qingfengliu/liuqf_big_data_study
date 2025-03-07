@@ -2,7 +2,9 @@ package com.atguigu.controller;
 
 import com.atguigu.pojo.User;
 import com.atguigu.service.UserService;
+import com.atguigu.utils.JwtHelper;
 import com.atguigu.utils.Result;
+import com.atguigu.utils.ResultCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +15,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtHelper jwtHelper;
 
     @PostMapping("/login")
     public Result login(@RequestBody User user) {
@@ -40,4 +45,15 @@ public class UserController {
         Result result=userService.register(user);
         return result;
     }
+
+    @GetMapping("checkLogin")
+    public Result checkLogin(@RequestHeader String token){
+        boolean expiration=jwtHelper.isExpiration(token);
+        if(expiration){
+            //已经过期了
+            return Result.build(null, ResultCodeEnum.NOTLOGIN);
+        }
+        return Result.ok(null);
+    }
+
 }
