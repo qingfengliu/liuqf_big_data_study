@@ -9,7 +9,9 @@ create table random_data.sale_data(
 	restaurant varchar(500),
 	food varchar(100),
 	count int,
-	price double,gmv double
+	price double,
+	gmv double,
+	tm bigint
 );
 
 create table random_data.person_data(

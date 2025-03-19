@@ -1,4 +1,4 @@
-package org.liuqf.make_random_data;
+package org.liuqf.make_random_data.pojo;
 import net.datafaker.transformations.JsonTransformer;
 import net.datafaker.transformations.Schema;
 import net.datafaker.Faker;
@@ -28,16 +28,16 @@ public class Restaurant_Data {
     }
 
 
-    String get_address() {
+    public String get_address() {
         return address;
     }
 
 
-    String get_company() {
+    public String get_company() {
         return company;
     }
 
-    String get_color() {
+    public String get_color() {
         return color;
     }
 

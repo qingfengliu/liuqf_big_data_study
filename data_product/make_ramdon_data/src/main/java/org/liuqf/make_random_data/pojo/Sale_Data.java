@@ -1,4 +1,4 @@
-package org.liuqf.make_random_data;
+package org.liuqf.make_random_data.pojo;
 
 import net.datafaker.transformations.JsonTransformer;
 import net.datafaker.transformations.Schema;
@@ -34,31 +34,31 @@ public class Sale_Data {
         return json;
     }
 
-    String get_name(){
+    public String get_name(){
         return name;
     }
 
-    String get_address(){
+    public String get_address(){
         return address;
     }
 
-    String get_restaurant(){
+    public String get_restaurant(){
         return restaurant;
     }
 
-    String get_food(){
+    public String get_food(){
         return food;
     }
 
-    Integer get_count(){
+    public Integer get_count(){
         return count;
     }
 
-    Double get_price(){
+    public Double get_price(){
         return price;
     }
 
-    Double get_gmv(){
+    public Double get_gmv(){
         return gmv;
     }
 }

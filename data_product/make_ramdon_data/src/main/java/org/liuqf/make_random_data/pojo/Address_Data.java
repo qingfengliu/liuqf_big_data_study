@@ -1,4 +1,4 @@
-package org.liuqf.make_random_data;
+package org.liuqf.make_random_data.pojo;
 import net.datafaker.transformations.JsonTransformer;
 import net.datafaker.transformations.Schema;
 import net.datafaker.Faker;
@@ -29,23 +29,23 @@ public class Address_Data {
     }
 
 
-    String get_city() {
+    public String get_city() {
         return city;
     }
 
-    String get_country() {
+    public String get_country() {
         return country;
     }
 
-    String get_state() {
+    public String get_state() {
         return state;
     }
 
-    String get_zip() {
+    public String get_zip() {
         return zip;
     }
 
-    Double get_distance() {
+    public Double get_distance() {
         return distance;
     }
 }

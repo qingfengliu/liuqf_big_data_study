@@ -1,4 +1,9 @@
 package org.liuqf.make_random_data;
+import org.liuqf.make_random_data.pojo.Address_Data;
+import org.liuqf.make_random_data.pojo.Person_Data;
+import org.liuqf.make_random_data.pojo.Restaurant_Data;
+import org.liuqf.make_random_data.pojo.Sale_Data;
+
 import java.sql.*;
 
 public class make_random_data {

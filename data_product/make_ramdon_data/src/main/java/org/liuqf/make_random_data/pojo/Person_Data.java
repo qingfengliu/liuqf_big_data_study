@@ -1,4 +1,4 @@
-package org.liuqf.make_random_data;
+package org.liuqf.make_random_data.pojo;
 import net.datafaker.transformations.JsonTransformer;
 import net.datafaker.transformations.Schema;
 import net.datafaker.Faker;
@@ -27,23 +27,23 @@ public class Person_Data {
     }
 
 
-    String get_address() {
+    public String get_address() {
         return address;
     }
 
-    String get_phone() {
+    public String get_phone() {
         return phone;
     }
 
-    String get_email() {
+    public String get_email() {
         return email;
     }
 
-    String get_company() {
+    public String get_company() {
         return company;
     }
 
-    String get_job() {
+    public String get_job() {
         return job;
     }
 }
