@@ -4,6 +4,8 @@ import org.liuqf.make_random_data.pojo.Person_Data;
 import org.liuqf.make_random_data.pojo.Restaurant_Data;
 import org.liuqf.make_random_data.pojo.Sale_Data;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.*;
 
 public class make_random_data {
@@ -15,7 +17,7 @@ public class make_random_data {
     public static void make_sale_data() throws SQLException{
 
 //        String jdbcName = "com.mysql.jdbc.Driver";//连接MySql数据库
-        String sql = "insert into random_data.sale_data values(?,?,?,?,?,?,?)";//数据库操作语句（插入）
+        String sql = "insert into random_data.sale_data values(?,?,?,?,?,?,?,?)";//数据库操作语句（插入）
 
         //生成100000条数据
         Connection conn = DriverManager.getConnection(make_random_data.Url, make_random_data.name, make_random_data.psd);
@@ -31,6 +33,11 @@ public class make_random_data {
             pst.setInt(5, sale_data.get_count());
             pst.setDouble(6, sale_data.get_price());
             pst.setDouble(7, sale_data.get_gmv());
+            //6*60*24*i+随机数0-6*60*24-1 并转换为bigint
+            BigInteger time = BigInteger.valueOf(6 * 60 * 24 * i + (int) (Math.random() * 10000));
+//            System.out.println(time);
+            pst.setBigDecimal(8, new BigDecimal(time));
+//            System.out.println(pst.toString());
             pst.executeUpdate();
             pst.close();
         }

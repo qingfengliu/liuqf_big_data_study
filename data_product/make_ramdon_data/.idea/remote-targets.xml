@@ -9,8 +9,7 @@
         </config>
         <ContributedStateBase type="JavaLanguageRuntime">
           <config>
-            <option name="homePath" value="/opt/jdk" />
-            <option name="javaVersionString" value="1.8.0_202" />
+            <option name="homePath" value="/opt/jdk24" />
           </config>
         </ContributedStateBase>
       </target>

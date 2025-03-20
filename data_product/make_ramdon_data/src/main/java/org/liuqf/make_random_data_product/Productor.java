@@ -7,6 +7,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.liuqf.make_random_data_product.pojo.SaleData;
 
 
 public class Productor {
@@ -35,23 +36,23 @@ public class Productor {
             dataFactory = new DataFactory(1000 * 30);   // 30s
 
             for (int i = 0; i < 100000; i += 10) {
-                List<List<String>> data=dataFactory.run_data(i);
-                data.forEach((List<String> item) -> {
+                List<List> data=dataFactory.run_data(i);
+                data.forEach((List item) -> {
                     //第二个topic有时候会出现数据丢失的情况，这个是因为kafka的分区策略导致的，可以通过自定义分区策略解决
                     System.out.println(item.get(0));
                     System.out.println(item.get(1));
-                    producer_sale.send(new ProducerRecord<String, String>("sale_random_data", item.get(0)));
-                    producer_sale.send(new ProducerRecord<String, String>("person_random_data", item.get(1)));
-                    producer_sale.flush();
+//                    System.out.println(item.get(1));
+//                    producer_sale.send(new ProducerRecord<String, String>("sale_random_data", item.get(0)));
+//                    producer_sale.send(new ProducerRecord<String, String>("person_random_data", item.get(1)));
+//                    producer_sale.flush();
                 });
-                //break;//一般拿10个数据测试一下
+                break;//一般拿10个数据测试一下
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             producer_sale.close();
-            dataFactory.close();
         }
     }
 }
