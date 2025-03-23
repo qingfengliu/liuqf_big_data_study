@@ -11,4 +11,15 @@ public class PersonData {
     private String company;
     private String job;
     private long tm;
+
+    public String toString(){
+        //转换成标准json格式
+        return "{\"name\":\""+name+
+                "\",\"address\":\""+address+
+                "\",\"phone\":\""+phone+
+                "\",\"email\":\""+email+
+                "\",\"company\":\""+company+
+                "\",\"job\":\""+job+
+                "\",\"tm\":"+tm+"}";
+    }
 }
