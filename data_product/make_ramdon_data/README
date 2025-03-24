@@ -5,7 +5,8 @@
 /opt/kafka/bin/kafka-topics.sh --list --bootstrap-server hadoop1:9092,hadoop2:9092,hadoop3:9092
 
 # 创建topic
-/opt/kafka/bin/kafka-topics.sh --create --topic test --partitions 3 --replication-factor 2 --bootstrap-server hadoop1:9092,hadoop2:9092,hadoop3:9092
+/opt/kafka/bin/kafka-topics.sh --create --topic sale_random_data --partitions 1 --replication-factor 1 --bootstrap-server hadoop1:9092
+/opt/kafka/bin/kafka-topics.sh --create --topic person_random_data --partitions 1 --replication-factor 1 --bootstrap-server hadoop1:9092
 
 #建立生产者
 /opt/kafka/bin/kafka-console-producer.sh --topic test --broker-list hadoop1:9092,hadoop2:9092,hadoop3:9092

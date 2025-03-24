@@ -13,6 +13,17 @@
           </config>
         </ContributedStateBase>
       </target>
+      <target name="hadoop@192.168.2.128:22" type="ssh/sftp" uuid="96fa0221-061a-4c68-b156-f13ce7b74380">
+        <config>
+          <option name="projectRootOnTarget" value="/home/hadoop/program" />
+          <option name="serverName" value="hadoop@192.168.2.128:22 password" />
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="homePath" value="/opt/jdk23" />
+          </config>
+        </ContributedStateBase>
+      </target>
     </targets>
   </component>
 </project>

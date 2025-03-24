@@ -14,7 +14,7 @@ import java.util.Properties;
 public class Receiver {
     public static void main(String[] args) {
         Properties prop = new Properties();
-        prop.put("bootstrap.servers", "hadoop1:9092,hadoop2:9092,hadoop3:9092");
+        prop.put("bootstrap.servers", "hadoop1:9092");
         prop.put("key.deserializer", StringDeserializer.class.getName());
         prop.put("value.deserializer", StringDeserializer.class.getName());
         prop.put("group.id", "con-1");

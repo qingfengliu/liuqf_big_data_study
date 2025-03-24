@@ -1,7 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
 <configuration>
+<!--    <settings>-->
+<!--        &lt;!&ndash; 打印sql日志 &ndash;&gt;-->
+<!--        <setting name="logImpl" value="STDOUT_LOGGING" />-->
+<!--    </settings>-->
     <!-- 配置mybatis运行环境 -->
     <environments default="development">
         <environment id="development">
@@ -12,7 +18,7 @@
                 <property name="driver" value="com.mysql.jdbc.Driver" />
                 <!-- 连接数据库的URL -->
                 <property name="url"
-                          value="jdbc:mysql://192.168.212.133/random_data" />
+                          value="jdbc:mysql://192.168.2.128/random_data" />
                 <property name="username" value="root" />
                 <property name="password" value="111111" />
             </dataSource>
@@ -23,4 +29,5 @@
         <mapper resource="SaleDataDao.xml" />
         <mapper resource="PersonDataDao.xml" />
     </mappers>
+
 </configuration>

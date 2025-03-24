@@ -11,4 +11,9 @@ public class PersonData {
     private String company;
     private String job;
     private long tm;
+
+    public String toString() {
+        //返回格式为json
+        return "{\"name\":\"" + name + "\",\"address\":\"" + address + "\",\"phone\":\"" + phone + "\",\"email\":\"" + email + "\",\"company\":\"" + company + "\",\"job\":\"" + job + "\",\"tm\":" + tm + "}";
+    }
 }

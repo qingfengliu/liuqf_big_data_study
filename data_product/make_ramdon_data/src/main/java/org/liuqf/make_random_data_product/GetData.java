@@ -11,19 +11,12 @@ import org.liuqf.make_random_data_product.pojo.PersonData;
 import org.liuqf.make_random_data_product.pojo.SaleData;
 
 import java.io.InputStream;
-import java.sql.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 
 public class GetData {
-
-
 
     public List<SaleData> get_saledata(int cusor) throws Exception {
         // 读取配置文件mybatis-config.xml

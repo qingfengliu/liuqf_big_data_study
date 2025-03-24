@@ -9,11 +9,23 @@ import java.math.BigInteger;
 import java.sql.*;
 
 public class make_random_data {
-//    static String Url = "jdbc:mysql://localhost/random_data";//参数参考MySql连接数据库常用参数及代码示例
-    static String Url = "jdbc:mysql://192.168.212.133/random_data";
+
+//    static String Url = "jdbc:mysql://192.168.212.133/random_data";
+    static String Url = "jdbc:mysql://192.168.2.128/random_data";
     static String name = "root";//数据库用户名
     static String psd = "111111";//数据库密码
 
+    public static void main(String[] args) {
+
+        try {
+            make_sale_data();
+            make_person_data();
+            restaurant_data();
+            address_data();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public static void make_sale_data() throws SQLException{
 
 //        String jdbcName = "com.mysql.jdbc.Driver";//连接MySql数据库
@@ -137,14 +149,5 @@ public class make_random_data {
         conn.close();
     }
 
-    public static void main(String[] args) {
-        try {
-            make_sale_data();
-            make_person_data();
-            restaurant_data();
-            address_data();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+
 }

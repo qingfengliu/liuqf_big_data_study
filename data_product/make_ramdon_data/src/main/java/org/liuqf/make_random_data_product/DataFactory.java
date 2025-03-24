@@ -48,7 +48,4 @@ public class DataFactory  {
         return sleep_time;
     }
 
-
-
-
 }

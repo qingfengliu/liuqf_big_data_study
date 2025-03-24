@@ -13,4 +13,9 @@ public class SaleData {
     private double gmv;
     private long tm;
 
+    public String toString() {
+        //返回格式为json
+        return "{\"name\":\"" + name + "\",\"address\":\"" + address + "\",\"restaurant\":\"" + restaurant + "\",\"food\":\"" + food + "\",\"count\":" + count + ",\"price\":" + price + ",\"gmv\":" + gmv + ",\"tm\":" + tm + "}";
+    }
+
 }
