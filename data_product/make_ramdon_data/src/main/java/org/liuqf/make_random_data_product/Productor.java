@@ -38,9 +38,9 @@ public class Productor {
 
             for (int i = 0; i < 100000; i += 10) {
                 List<List> data=dataFactory.run_data(i);
-                for(i=0;i<data.get(0).size();i++){
-                    SaleData saleDate=(SaleData)data.get(0).get(i);
-                    PersonData personData=(PersonData)data.get(1).get(i);
+                for(int j=0;j<data.get(0).size();j++){
+                    SaleData saleDate=(SaleData)data.get(0).get(j);
+                    PersonData personData=(PersonData)data.get(1).get(j);
                     System.out.println(saleDate.toString());
                     producer_sale.send(new ProducerRecord<String, String>("sale_random_data", saleDate.toString()));
 //                    producer_sale.send(new ProducerRecord<String, String>("person_random_data", personData.toString()));

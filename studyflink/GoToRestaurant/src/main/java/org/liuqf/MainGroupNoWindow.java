@@ -6,7 +6,7 @@ import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
 
-public class MainSerial {
+public class MainGroupNoWindow {
     public static void main(String[] args) throws Exception {
 
         //1. env-准备环境
@@ -34,21 +34,18 @@ public class MainSerial {
                 "\t'scan.startup.mode' = 'latest-offset',\n" +
                 "\t'format'= 'json' \n" +
                 ");");
-//        tEnv.executeSql("select * from sale_order;").print();
-        Table resultTable = tEnv.sqlQuery("select * from sale_order");
-
+        Table resultTable = tEnv.sqlQuery("select name,sum(gmv) from sale_order group by name");
+        //启动flink sql client
+        // /opt/flink/bin/sql-client.sh
         // interpret the insert-only Table as a DataStream again
-        DataStream<Row> resultStream = tEnv.toDataStream(resultTable);
+        DataStream<Row> resultStream = tEnv.toChangelogStream(resultTable);
 
-        // add a printing sink and execute in DataStream API
         resultStream.print();
         env.execute();
 
-        //上边这种方式在1.20中使用webui提交的时候会报错。
-        //搞不太清是什么问题。
+        //上边这种方式在1.20中使用webui提交的时候会报错。可能是kafka依赖的 ，还是没找到原因
+
         //用下边命令可以运行
         // /opt/flink/bin/flink run -m yarn-cluster -c org.liuqf.Main GoToRestaurant-1.0-SNAPSHOT.jar
-        //5. execute-执行
-//        env.execute();
     }
 }
