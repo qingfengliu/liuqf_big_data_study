@@ -25,28 +25,32 @@ public class Main {
                 "\t`count`      BIGINT, \n" +
                 "\tprice      DOUBLE, \n" +
                 "\tgmv      DOUBLE, \n" +
-                "\t`tm` TIMESTAMP_LTZ(3) METADATA FROM 'timestamp'\n" +
+                "\t`tm` BIGINT,\n" +
+                "\tts AS TO_TIMESTAMP_LTZ(tm, 3),\n" +
+                "\tWATERMARK FOR ts AS ts - INTERVAL '5' SECOND\n" +
                 ") WITH (\n" +
                 "\t'connector'= 'kafka', \n" +
                 "\t'topic'= 'sale_random_data',\n" +
                 "\t'properties.bootstrap.servers'='hadoop1:9092,hadoop2:9092,hadoop3:9092',\n" +
-                "\t'properties.client.id'='flink-connector-kafka-0',\n" +
                 "\t'properties.group.id'='abc',\n" +
                 "\t'scan.startup.mode' = 'latest-offset',\n" +
                 "\t'format'= 'json' \n" +
                 ");");
-        Table resultTable = tEnv.sqlQuery("select name,sum(gmv) from sale_order group by name");
-        //启动flink sql client
-        // /opt/flink/bin/sql-client.sh
-        // interpret the insert-only Table as a DataStream again
+//        tEnv.executeSql("SELECT name,sum(gmv) gmv FROM TABLE(\n" +
+//                "\tTUMBLE(TABLE sale_order, DESCRIPTOR(ts), INTERVAL '1' MINUTES)\n" +
+//                ")\n" +
+//                "group by name\n" +
+//                ";").print();   //这个打印出现在运行程序的窗口
+        Table resultTable = tEnv.sqlQuery("SELECT name,sum(gmv) gmv FROM TABLE(\n" +
+                "\tTUMBLE(TABLE sale_order, DESCRIPTOR(ts), INTERVAL '1' MINUTES)\n" +
+                ")\n" +
+                "group by name\n" +
+                ";");
         DataStream<Row> resultStream = tEnv.toChangelogStream(resultTable);
 
-        resultStream.print();
+        // add a printing sink and execute in DataStream API
+        resultStream.print();//这个在webui上可以看到
         env.execute();
 
-        //上边这种方式在1.20中使用webui提交的时候会报错。可能是kafka依赖的 ，还是没找到原因
-
-        //用下边命令可以运行
-        // /opt/flink/bin/flink run -m yarn-cluster -c org.liuqf.Main GoToRestaurant-1.0-SNAPSHOT.jar
     }
 }
