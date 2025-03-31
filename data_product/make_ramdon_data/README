@@ -2,18 +2,18 @@
 记录辅助命令
 ```shell
 # 查看topic
-/opt/kafka/bin/kafka-topics.sh --list --bootstrap-server hadoop1:9092,hadoop2:9092,hadoop3:9092
+/opt/kafka/bin/kafka-topics.sh --list --bootstrap-server hadoop1:9092
 
 # 创建topic
 /opt/kafka/bin/kafka-topics.sh --create --topic sale_random_data --partitions 1 --replication-factor 1 --bootstrap-server hadoop1:9092
 /opt/kafka/bin/kafka-topics.sh --create --topic person_random_data --partitions 1 --replication-factor 1 --bootstrap-server hadoop1:9092
 
 #建立生产者
-/opt/kafka/bin/kafka-console-producer.sh --topic test --broker-list hadoop1:9092,hadoop2:9092,hadoop3:9092
+/opt/kafka/bin/kafka-console-producer.sh --topic sale_random_data --broker-list hadoop1:9092
 
 #建立消费者
-#/opt/kafka/bin/kafka-console-consumer.sh --topic sale_random_data --from-beginning --bootstrap-server hadoop1:9092,hadoop2:9092,hadoop3:9092
-/opt/kafka/bin/kafka-console-consumer.sh --topic person_random_data --bootstrap-server hadoop1:9092,hadoop2:9092,hadoop3:9092
+#/opt/kafka/bin/kafka-console-consumer.sh --topic sale_random_data --from-beginning --bootstrap-server hadoop1:9092
+/opt/kafka/bin/kafka-console-consumer.sh --topic person_random_data --bootstrap-server hadoop1:9092
 
 #测试通过生产者数据数据消费者会打印出来
 
