@@ -44,9 +44,9 @@ public class Productor {
                 for (int j = 0; j < data.get(0).size(); j++) {
                     SaleData saleData = (SaleData)(data.get(0).get(j));
                     PersonData personData = (PersonData)(data.get(1).get(j));
-                    System.out.println(personData.toString());
+//                    System.out.println(personData.toString());
                     System.out.println(saleData.toString());
-                    producer_sale.send(new ProducerRecord<String, String>("sale_random_data", item.get(0)));
+                    producer_sale.send(new ProducerRecord<String, String>("sale_random_data", saleData.toString()));
 //                    producer_sale.send(new ProducerRecord<String, String>("person_random_data", item.get(1)));
 
 //                    producer_sale.send(new ProducerRecord<String, String>("sale_random_data", item.get(0)));
@@ -54,7 +54,7 @@ public class Productor {
                     producer_sale.flush();
                 }
 
-                break;//一般拿10个数据测试一下
+
             }
 
         } catch (Exception e) {
