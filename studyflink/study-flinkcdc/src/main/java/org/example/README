@@ -1,0 +1,4 @@
+org.example.FlickCDC_CheckPoint 注意这个实验要提交到集群上运行由于先在本地有运行改了mysql的时区
+flink也要改时区
+    在conf目录下的flink-conf.yaml文件中，你可以添加或修改以下配置来设置全局的时区
+    timezone: UTC
